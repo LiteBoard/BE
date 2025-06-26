@@ -1,5 +1,6 @@
 language: "ko-KR"
 early_access: false
+
 reviews:
   profile: "chill" 
   request_changes_workflow: true 
@@ -10,5 +11,8 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+  review_language: "ko-KR"
+  
 chat:
   auto_reply: true
+  anguage: "ko-KR"
