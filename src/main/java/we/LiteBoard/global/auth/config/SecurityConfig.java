@@ -22,11 +22,6 @@ import we.LiteBoard.global.auth.jwt.util.JWTUtil;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomSuccessHandler customSuccessHandler;
-    private final CorsFilter corsFilter;
-    private final JWTUtil jwtUtil;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
