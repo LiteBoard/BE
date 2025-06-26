@@ -3,7 +3,7 @@ early_access: false
 
 reviews:
   profile: "chill" 
-  request_changes_workflow: true 
+  request_changes_workflow: false 
   high_level_summary: true
   poem: false 
   review_status: true
@@ -15,4 +15,4 @@ reviews:
   
 chat:
   auto_reply: true
-  anguage: "ko-KR"
+  language: "ko-KR"
