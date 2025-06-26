@@ -16,6 +16,7 @@ import we.LiteBoard.global.auth.OAuth2.service.CustomOAuth2UserService;
 import we.LiteBoard.global.auth.jwt.filter.JWTFilter;
 import we.LiteBoard.global.auth.jwt.util.JWTUtil;
 
+// code rabbit 테스트
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
