@@ -22,6 +22,7 @@ import we.LiteBoard.global.auth.jwt.util.JWTUtil;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
