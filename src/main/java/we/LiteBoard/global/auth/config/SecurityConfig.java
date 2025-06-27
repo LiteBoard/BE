@@ -26,6 +26,12 @@ public class SecurityConfig {
     private final CorsFilter corsFilter;
     private final JWTUtil jwtUtil;
 
+    private final String[] allowedUrls = {
+            "/",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -53,7 +59,7 @@ public class SecurityConfig {
 
         // 경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers(allowedUrls).permitAll()
                         .anyRequest().authenticated());
 
         // 세션 설정 : STATELESS
