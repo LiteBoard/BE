@@ -17,7 +17,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .servers(List.of(
-                        // new Server().url("https://jk-project.site").description("Production Server"),
+                        new Server().url("https://jk-project.site").description("Production Server"),
                         new Server().url("http://localhost:8080").description("Local Server")
                 ))
                 //.components(components())
@@ -27,8 +27,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("WITHUS Backend API Docs")
-                .description("WITHUS API 명세서입니다.");
+                .title("LiteBoard Backend API Docs")
+                .description("LiteBoard API 명세서입니다.");
     }
 
 //    // JWT 토큰을 위한 보안 컴포넌트 설정
