@@ -38,4 +38,10 @@ public class Project {
     @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories = new ArrayList<>();
+
+    /** 연관 관계 편의 메서드 */
+    public void addMemberProject(MemberProject memberProject) {
+        this.memberProjects.add(memberProject);
+        memberProject.setProject(this);
+    }
 }

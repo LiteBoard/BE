@@ -3,6 +3,9 @@ package we.LiteBoard.domain.project.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.memberProject.entity.MemberProject;
+import we.LiteBoard.domain.memberProject.enumerate.ProjectRole;
 import we.LiteBoard.domain.project.dto.ProjectRequestDTO;
 import we.LiteBoard.domain.project.dto.ProjectResponseDTO;
 import we.LiteBoard.domain.project.entity.Project;
@@ -22,12 +25,19 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public Long create(ProjectRequestDTO.Create request) {
+    public Long create(Member currentMember, ProjectRequestDTO.Create request) {
         Project project = Project.builder()
                 .title(request.title())
                 .startDate(request.startDate())
                 .endDate(request.endDate())
                 .build();
+
+        MemberProject memberProject = MemberProject.builder()
+                .projectRole(ProjectRole.ADMIN)
+                .build();
+
+        project.addMemberProject(memberProject);
+        currentMember.addMemberProject(memberProject);
 
         return projectRepository.save(project).getId();
     }

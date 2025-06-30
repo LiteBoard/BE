@@ -29,4 +29,13 @@ public class MemberProject {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROJECT_ID", nullable = false)
     private Project project;
+
+    /** 연관 관계 편의 메서드 */
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
 }

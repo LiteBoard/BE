@@ -66,4 +66,10 @@ public class Member {
         this.name = name;
         return this;
     }
+
+    /** 연관 관계 편의 메서드 */
+    public void addMemberProject(MemberProject memberProject) {
+        this.memberProjects.add(memberProject);
+        memberProject.setMember(this);
+    }
 }

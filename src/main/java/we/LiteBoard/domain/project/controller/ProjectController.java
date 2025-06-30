@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.project.dto.ProjectRequestDTO;
 import we.LiteBoard.domain.project.dto.ProjectResponseDTO;
 import we.LiteBoard.domain.project.service.ProjectService;
+import we.LiteBoard.global.common.annotation.CurrentMember;
 import we.LiteBoard.global.response.SuccessResponse;
 
 @RestController
@@ -20,8 +22,11 @@ public class ProjectController {
 
     @PostMapping
     @Operation(summary = "프로젝트 생성 API", description = "프로젝트명을 입력받아 프로젝트를 생성합니다.")
-    public SuccessResponse<Long> create(@RequestBody @Valid ProjectRequestDTO.Create request) {
-        Long projectId = projectService.create(request);
+    public SuccessResponse<Long> create(
+            @CurrentMember Member currentMember,
+            @RequestBody @Valid ProjectRequestDTO.Create request
+    ) {
+        Long projectId = projectService.create(currentMember, request);
         return SuccessResponse.ok(projectId);
     }
 
