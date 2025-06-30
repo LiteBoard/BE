@@ -40,20 +40,20 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createAccessToken(String username, String role) {
+    public String createAccessToken(String email, String role) {
         long accessTokenExpireMs = 1000L * 60 * 1000; // 1000분 //FIXME 임시값
-        return createJwt(username, role, accessTokenExpireMs);
+        return createJwt(email, role, accessTokenExpireMs);
     }
 
-    public String createRefreshToken(String username, String role) {
+    public String createRefreshToken(String email, String role) {
         long refreshTokenExpireMs = 1000L * 60 * 60 * 24 * 3; // 3일
-        return createJwt(username, role, refreshTokenExpireMs);
+        return createJwt(email, role, refreshTokenExpireMs);
     }
 
-    public String createJwt(String username, String role, Long expiredMs) {
+    public String createJwt(String email, String role, Long expiredMs) {
 
         return Jwts.builder()
-                .claim("username", username)
+                .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))

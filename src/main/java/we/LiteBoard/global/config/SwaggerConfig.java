@@ -1,7 +1,10 @@
 package we.LiteBoard.global.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +23,9 @@ public class SwaggerConfig {
                         new Server().url("https://jk-project.site").description("Production Server"),
                         new Server().url("http://localhost:8080").description("Local Server")
                 ))
-                //.components(components())
-                .info(apiInfo());
-                //.addSecurityItem(securityRequirement());
+                .components(components())
+                .info(apiInfo())
+                .addSecurityItem(securityRequirement());
     }
 
     private Info apiInfo() {
@@ -31,20 +34,20 @@ public class SwaggerConfig {
                 .description("LiteBoard API 명세서입니다.");
     }
 
-//    // JWT 토큰을 위한 보안 컴포넌트 설정
-//    private Components components() {
-//        String securityScheme = "JWT TOKEN";
-//        return new Components()
-//                .addSecuritySchemes(securityScheme, new SecurityScheme()
-//                        .name(securityScheme)
-//                        .type(SecurityScheme.Type.HTTP)
-//                        .scheme("Bearer")
-//                        .bearerFormat("JWT"));
-//    }
-//
-//    // 보안 요구사항 설정
-//    private SecurityRequirement securityRequirement() {
-//        String securityScheme = "JWT TOKEN";
-//        return new SecurityRequirement().addList(securityScheme);
-//    }
+    // JWT 토큰을 위한 보안 컴포넌트 설정
+    private Components components() {
+        String securityScheme = "JWT TOKEN";
+        return new Components()
+                .addSecuritySchemes(securityScheme, new SecurityScheme()
+                        .name(securityScheme)
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("Bearer")
+                        .bearerFormat("JWT"));
+    }
+
+    // 보안 요구사항 설정
+    private SecurityRequirement securityRequirement() {
+        String securityScheme = "JWT TOKEN";
+        return new SecurityRequirement().addList(securityScheme);
+    }
 }

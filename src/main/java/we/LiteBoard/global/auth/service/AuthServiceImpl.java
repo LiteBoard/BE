@@ -20,10 +20,10 @@ public class AuthServiceImpl implements AuthService {
             // 예외 처리
         }
 
-        String username = jwtUtil.getUsername(refreshToken);
+        String email = jwtUtil.getEmail(refreshToken);
 
         // Redis에 저장된 Refresh Token과 비교
-        String storedRefreshToken = redisTokenCache.get(username);
+        String storedRefreshToken = redisTokenCache.get(email);
 
         if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
             // 예외 처리
@@ -31,6 +31,6 @@ public class AuthServiceImpl implements AuthService {
 
         String role = jwtUtil.getRole(refreshToken);
 
-        return jwtUtil.createAccessToken(username, role);
+        return jwtUtil.createAccessToken(email, role);
     }
 }

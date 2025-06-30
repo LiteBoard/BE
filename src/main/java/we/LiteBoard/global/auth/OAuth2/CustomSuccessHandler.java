@@ -30,17 +30,17 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         //OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
-        String username = customUserDetails.getUsername();
+        String email = customUserDetails.getEmail();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String accessToken = jwtUtil.createAccessToken(username, role);
-        String refreshToken = jwtUtil.createRefreshToken(username, role);
+        String accessToken = jwtUtil.createAccessToken(email, role);
+        String refreshToken = jwtUtil.createRefreshToken(email, role);
 
-        tokenCache.save("auth:refresh:" + username, refreshToken, Duration.ofDays(3));
+        tokenCache.save("auth:refresh:" + email, refreshToken, Duration.ofDays(3));
 
         response.addCookie(createCookie("Authorization", accessToken));
         response.addCookie(createCookie("Refresh-Token", refreshToken));
