@@ -28,10 +28,10 @@ public class RequestCard {
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID", nullable = false)
+    @JoinColumn(name = "RECEIVER_ID", nullable = false)
     private Member receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REQUESTER_ID", nullable = false)
+    @JoinColumn(name = "SENDER_ID", nullable = false)
     private Member sender;
 }

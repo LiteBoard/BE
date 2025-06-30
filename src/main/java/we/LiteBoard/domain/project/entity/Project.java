@@ -31,9 +31,11 @@ public class Project {
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "project")
     private List<MemberProject> memberProjects = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "project")
     private List<Category> categories = new ArrayList<>();
 }

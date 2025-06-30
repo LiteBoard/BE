@@ -27,6 +27,7 @@ public class Category {
     @JoinColumn(name = "PROJECT_ID", nullable = false)
     private Project project;
 
+    @Builder.Default
     @OneToMany(mappedBy = "category")
     private List<Task> tasks = new ArrayList<>();
 }

@@ -47,9 +47,11 @@ public class Task {
     @JoinColumn(name = "MEMBER_ID", nullable = false)
     private Member member;
 
+    @Builder.Default
     @OneToMany(mappedBy = "task")
     private List<Todo> todos = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "task")
     private List<RequestCard> requestCards = new ArrayList<>();
 
