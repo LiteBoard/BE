@@ -30,7 +30,8 @@ public class SecurityConfig {
             "/",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/health"
+            "/health",
+            "/api/v1/**" // 임시 허용
     };
 
     @Bean
