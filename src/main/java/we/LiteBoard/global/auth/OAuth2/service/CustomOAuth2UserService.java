@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.member.enumerate.MemberRole;
 import we.LiteBoard.domain.member.repository.MemberRepository;
 import we.LiteBoard.global.auth.OAuth2.CustomOAuth2User;
 import we.LiteBoard.global.auth.OAuth2.dto.GoogleResponse;
@@ -34,7 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .username(username)
                     .email(oAuth2Response.getEmail())
                     .name(oAuth2Response.getName())
-                    .role("ROLE_USER")
+                    .role(MemberRole.USER)
                     .build();
             memberRepository.save(member);
         } else {
@@ -45,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         UserDTO userDTO = UserDTO.builder()
                 .username(member.getUsername())
                 .name(member.getName())
-                .role(member.getRole())
+                .role(member.getRole().name())
                 .build();
 
         return new CustomOAuth2User(userDTO);
