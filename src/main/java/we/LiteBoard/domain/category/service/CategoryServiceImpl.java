@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Long update(Long categoryId, CategoryRequestDTO.Upsert request) {
         Category category = categoryRepository.getById(categoryId);
-        category.updateName(request.title());
+        category.updateTitle(request.title());
         return category.getId();
 
     }

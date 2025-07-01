@@ -31,7 +31,7 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
-    public void updateName(String title) {
+    public void updateTitle(String title) {
         this.title = title;
     }
 
