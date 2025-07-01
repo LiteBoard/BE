@@ -60,6 +60,9 @@ public enum ErrorCode {
     // Project (프로젝트)
     PROJECT_NOT_FOUND("PROJECT404", "프로젝트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    // Category (카테고리)
+    CATEGORY_NOT_FOUND("CATEGORY404", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // EMAIL
     EMAIL_SEND_FAIL("EMAIL500", "메일 전송에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     TEMPLATE_NOT_LOAD("EMAIL500", "이메일 템플릿을 로드할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),

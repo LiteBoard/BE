@@ -30,4 +30,13 @@ public class Category {
     @Builder.Default
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
+
+    public void updateName(String title) {
+        this.title = title;
+    }
+
+    /** 연관 관계 편의 메서드 */
+    public void setProject(Project project) {
+        this.project = project;
+    }
 }
