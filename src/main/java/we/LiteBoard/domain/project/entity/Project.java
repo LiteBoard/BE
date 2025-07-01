@@ -44,4 +44,9 @@ public class Project {
         this.memberProjects.add(memberProject);
         memberProject.setProject(this);
     }
+
+    public void addCategory(Category category) {
+        this.categories.add(category);
+        category.setProject(this);
+    }
 }
