@@ -63,11 +63,16 @@ public enum ErrorCode {
     // Category (카테고리)
     CATEGORY_NOT_FOUND("CATEGORY404", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    // REDIS
+    REDIS_STORE_FAILED("REDIS500", "Redis 저장 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    REDIS_READ_FAILED("REDIS500", "Redis 조회 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    REDIS_DELETE_FAILED("REDIS500", "Redis 삭제 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
     // EMAIL
     EMAIL_SEND_FAIL("EMAIL500", "메일 전송에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     TEMPLATE_NOT_LOAD("EMAIL500", "이메일 템플릿을 로드할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
-    // File Upload
+    // FILE
     FILE_UPLOAD_FAIL("FILE500", "파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     FILE_IO_ERROR("FILE500", "파일 처리 중 I/O 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     FILE_INVALID_URL("FILE400", "잘못된 이미지 URL 형식입니다", HttpStatus.BAD_REQUEST),
