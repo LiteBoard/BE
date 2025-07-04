@@ -63,6 +63,9 @@ public enum ErrorCode {
     // Category (카테고리)
     CATEGORY_NOT_FOUND("CATEGORY404", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    // Task (업무)
+    TASK_NOT_FOUND("TASK404", "업무를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // REDIS
     REDIS_STORE_FAILED("REDIS500", "Redis 저장 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     REDIS_READ_FAILED("REDIS500", "Redis 조회 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
