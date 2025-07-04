@@ -71,6 +71,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional
     public void deleteById(Long todoId) {
+        todoRepository.getById(todoId);
         todoRepository.deleteById(todoId);
     }
 }
