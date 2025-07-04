@@ -28,3 +28,6 @@ spring:
     redis:
       host: redis
       port: 6379
+
+springdoc:
+  use-fqn: true

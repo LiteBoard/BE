@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import we.LiteBoard.domain.memberProject.entity.MemberProject;
 import we.LiteBoard.domain.memberProject.enumerate.ProjectRole;
 import we.LiteBoard.domain.project.entity.Project;
+import we.LiteBoard.global.common.annotation.DateFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,8 +15,8 @@ public class ProjectResponseDTO {
     @Schema(description = "프로젝트 상세 조회 응답 DTO")
     public record Detail(
             @Schema(description = "프로젝트 ID") Long id,
-            @Schema(description = "시작일") LocalDate startDate,
-            @Schema(description = "마감일") LocalDate endDate,
+            @Schema(description = "시작일") @DateFormat LocalDate startDate,
+            @Schema(description = "마감일") @DateFormat LocalDate endDate,
             @Schema(description = "프로젝트 멤버 목록") List<MemberSummary> members
     ) {
         public static Detail from(Project project) {

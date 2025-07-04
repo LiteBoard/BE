@@ -55,4 +55,12 @@ public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestCard> requestCards = new ArrayList<>();
 
+    public void update(String title, String description, Status status, LocalDate startDate, LocalDate endDate) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
 }

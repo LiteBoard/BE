@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.task.entity.Task;
-import we.LiteBoard.domain.task.enumerate.Status;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "TODO")
@@ -24,14 +21,8 @@ public class Todo {
     @Column(nullable = false)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    @Column(name = "START_DATE")
-    private LocalDate startDate;
-
-    @Column(name = "END_DATE")
-    private LocalDate endDate;
+    @Column(nullable = false)
+    private boolean done;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TASK_ID", nullable = false)
@@ -41,4 +32,16 @@ public class Todo {
     @JoinColumn(name = "MEMBER_ID", nullable = false)
     private Member member;
 
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void toggle() {
+        this.done = !this.done;
+    }
+
+    /** 연관 관계 편의 메서드 */
+    public void setTask(Task task) {
+        this.task = task;
+    }
 }
