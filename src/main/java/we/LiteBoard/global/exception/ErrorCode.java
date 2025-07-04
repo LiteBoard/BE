@@ -66,6 +66,9 @@ public enum ErrorCode {
     // Task (업무)
     TASK_NOT_FOUND("TASK404", "업무를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    // TODOs (하위 업무)
+    TODO_NOT_FOUND("TODO404", "TODO를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // REDIS
     REDIS_STORE_FAILED("REDIS500", "Redis 저장 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     REDIS_READ_FAILED("REDIS500", "Redis 조회 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
