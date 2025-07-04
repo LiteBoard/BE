@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.enumerate.Status;
+import we.LiteBoard.global.common.annotation.DateFormat;
 
 import java.time.LocalDate;
 
@@ -27,8 +28,8 @@ public class TaskResponseDTO {
             @Schema(description = "업무 제목") String title,
             @Schema(description = "업무 설명") String description,
             @Schema(description = "상태") Status status,
-            @Schema(description = "시작일") LocalDate startDate,
-            @Schema(description = "마감일") LocalDate endDate,
+            @Schema(description = "시작일") @DateFormat LocalDate startDate,
+            @Schema(description = "마감일") @DateFormat LocalDate endDate,
             @Schema(description = "담당자 정보") MemberResponseDTO.Summary member
     ) {
         public static TaskResponseDTO.Detail from(Task task) {
