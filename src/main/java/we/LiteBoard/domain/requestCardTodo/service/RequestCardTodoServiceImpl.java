@@ -35,6 +35,8 @@ public class RequestCardTodoServiceImpl implements RequestCardTodoService {
         Todo todo = TodoFactory.fromRequestCardTodo(matched, requestCard.getTask(), currentMember);
         todoRepository.save(todo);
 
+        requestCard.getTodos().remove(matched);
+
         return todo.getId();
     }
 }
