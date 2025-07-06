@@ -72,6 +72,9 @@ public enum ErrorCode {
     // Request Card (업무 요청)
     REQUEST_CARD_NOT_FOUND("REQUEST_CARD404", "업무 요청을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    // Request Card Todos (업무 요청 속 Todos)
+    REQUEST_CARD_TODO_NOT_FOUND("REQUEST_CARD_TODO404", "업무 요청 속 Todo를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // REDIS
     REDIS_STORE_FAILED("REDIS500", "Redis 저장 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     REDIS_READ_FAILED("REDIS500", "Redis 조회 중 오류 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
