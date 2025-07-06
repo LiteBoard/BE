@@ -43,7 +43,7 @@ public class TaskResponseDTO {
                     task.getTitle(),
                     task.getDescription(),
                     task.getStatus(),
-                    task.getEndDate(),
+                    task.getStartDate(),
                     task.getEndDate(),
                     MemberResponseDTO.Summary.from(task.getMember()),
                     task.getTodos().stream()

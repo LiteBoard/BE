@@ -2,6 +2,7 @@ package we.LiteBoard.domain.todo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class TodoRequestDTO {
 
     @Schema(description = "TODO 토글 상태 변경 요청 DTO")
     public record Toggle(
-            @Schema(description = "상태 변경할 TODO ID 리스트", example = "[1]") List<Long> todoIds
+            @Schema(description = "상태 변경할 TODO ID 리스트", example = "[1]")
+            @NotEmpty List<Long> todoIds
     ) {}
 }
