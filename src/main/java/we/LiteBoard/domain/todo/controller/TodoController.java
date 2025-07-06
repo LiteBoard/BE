@@ -17,11 +17,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "TODO")
+@RequestMapping("/api/v1")
 public class TodoController {
 
     private final TodoService todoService;
 
-    @PostMapping("/api/v1/tasks/{taskId}/todos")
+    @PostMapping("/tasks/{taskId}/todos")
     @Operation(summary = "TODO 생성", description = "업무에 TODO를 생성합니다.")
     public SuccessResponse<TodoResponseDTO.Upsert> create(
             @CurrentMember Member currentMember,
@@ -31,13 +32,13 @@ public class TodoController {
         return SuccessResponse.ok(todoService.create(currentMember, taskId, request));
     }
 
-    @GetMapping("/api/v1/tasks/{taskId}/todos")
+    @GetMapping("/tasks/{taskId}/todos")
     @Operation(summary = "Task에 속한 TODO 목록 조회", description = "특정 업무에 속한 TODO 목록을 반환합니다.")
     public SuccessResponse<List<TodoResponseDTO.Detail>> getAllByTask(@PathVariable Long taskId) {
         return SuccessResponse.ok(todoService.getAllByTask(taskId));
     }
 
-    @PatchMapping("/api/v1/todos/{todoId}")
+    @PatchMapping("/todos/{todoId}")
     @Operation(summary = "TODO 수정", description = "TODO 내용을 수정합니다.")
     public SuccessResponse<TodoResponseDTO.Upsert> update(
             @PathVariable Long todoId,
@@ -46,7 +47,7 @@ public class TodoController {
         return SuccessResponse.ok(todoService.update(todoId, request));
     }
 
-    @PatchMapping("/api/v1/todos/toggle")
+    @PatchMapping("/todos/toggle")
     @Operation(summary = "여러 TODO 완료 상태 토글", description = "전달받은 todoId 리스트의 완료 상태를 반전시킵니다.")
     public SuccessResponse<List<TodoResponseDTO.Detail>> toggleTodos(
             @RequestBody @Valid TodoRequestDTO.Toggle request
@@ -54,7 +55,7 @@ public class TodoController {
         return SuccessResponse.ok(todoService.toggleTodos(request.todoIds()));
     }
 
-    @DeleteMapping("/api/v1/todos/{todoId}")
+    @DeleteMapping("/todos/{todoId}")
     @Operation(summary = "TODO 삭제", description = "TODO를 삭제합니다.")
     public SuccessResponse<String> delete(@PathVariable Long todoId) {
         todoService.deleteById(todoId);
