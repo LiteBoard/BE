@@ -9,6 +9,7 @@ import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
 import we.LiteBoard.global.common.annotation.DateFormat;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Schema(description = "업무 관련 응답 DTO")
@@ -75,5 +76,30 @@ public class TaskResponseDTO {
             @Schema(description = "업무 상태") String status,
             @Schema(description = "업무에 속한 Todo 목록") List<TodoResponseDTO.Detail> todos
     ) {
+        public static MyTask from(Task task) {
+            List<TodoResponseDTO.Detail> todos = task.getTodos().stream()
+                    .map(TodoResponseDTO.Detail::from)
+                    .toList();
+
+            int total = todos.size();
+            int completed = (int) todos.stream().filter(TodoResponseDTO.Detail::done).count();
+            long daysLeft = getDaysLeft(task.getEndDate());
+
+            return new MyTask(
+                    task.getId(),
+                    task.getTitle(),
+                    total,
+                    completed,
+                    daysLeft,
+                    task.getStatus().name(),
+                    todos
+            );
+        }
+
+        private static long getDaysLeft(LocalDate endDate) {
+            return (endDate != null)
+                    ? ChronoUnit.DAYS.between(LocalDate.now(), endDate)
+                    : 0;
+        }
     }
 }
