@@ -71,6 +71,15 @@ public class Task {
         }
 
         boolean allDone = todos.stream().allMatch(Todo::isDone);
-        this.status = allDone ? Status.COMPLETED : Status.IN_PROGRESS;
+        if (allDone) {
+            this.status = Status.COMPLETED;
+            return;
+        }
+
+        if (this.endDate != null && LocalDate.now().isBefore(this.endDate.plusDays(1))) {
+            this.status = Status.IN_PROGRESS;
+        } else {
+            this.status = Status.DELAYED;
+        }
     }
 }

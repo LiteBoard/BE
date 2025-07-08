@@ -72,8 +72,11 @@ public class TaskServiceImpl implements TaskService {
      * @return 조회된 업무 상세 정보
      */
     @Override
+    @Transactional
     public TaskResponseDTO.Detail getById(Long taskId) {
         Task task = taskRepository.getById(taskId);
+        task.refreshStatus();
+
         return TaskResponseDTO.Detail.from(task);
     }
 
@@ -113,8 +116,12 @@ public class TaskServiceImpl implements TaskService {
      * @return 진행 중인 내 업무 정보 반환
      */
     @Override
+    @Transactional // 업무 상태 변환 필요 (지연된 경우)
     public TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member member) {
-        List<Task> tasks = taskRepository.findByMemberAndStatus(member, Status.IN_PROGRESS);
+        List<Status> targetStatuses = List.of(Status.IN_PROGRESS, Status.DELAYED);
+        List<Task> tasks = taskRepository.findByMemberAndStatuses(member, targetStatuses);
+
+        tasks.forEach(Task::refreshStatus);
 
         List<TaskResponseDTO.MyTask> myTasks = tasks.stream()
                 .map(TaskResponseDTO.MyTask::from)
