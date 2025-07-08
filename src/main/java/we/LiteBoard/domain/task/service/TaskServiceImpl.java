@@ -12,9 +12,14 @@ import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.task.repository.TaskRepository;
+import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
+import we.LiteBoard.domain.todo.entity.Todo;
 import we.LiteBoard.global.exception.CustomException;
 import we.LiteBoard.global.exception.ErrorCode;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,5 +110,53 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void deleteById(Long taskId) {
         taskRepository.deleteById(taskId);
+    }
+
+    /**
+     * 내 업무 조회
+     * @param member 요청 보내는 멤버
+     * @return 진행 중인 내 업무 정보 반환
+     */
+    @Override
+    public TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member member) {
+        List<Task> tasks = taskRepository.findByMemberAndStatus(member, Status.IN_PROGRESS);
+
+        int total = 0;
+        int completed = 0;
+
+        List<TaskResponseDTO.MyTask> myTasks = new ArrayList<>();
+
+        for (Task task : tasks) {
+            int taskTotal = task.getTodos().size();
+            int taskCompleted = (int) task.getTodos().stream().filter(Todo::isDone).count();
+
+            total += taskTotal;
+            completed += taskCompleted;
+
+            long daysLeft = 0;
+            if (task.getEndDate() != null) {
+                daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), task.getEndDate());
+            }
+
+            List<TodoResponseDTO.Detail> todos = task.getTodos().stream()
+                    .map(TodoResponseDTO.Detail::from).toList();
+
+            myTasks.add(new TaskResponseDTO.MyTask(
+                    task.getId(),
+                    task.getTitle(),
+                    taskTotal,
+                    taskCompleted,
+                    daysLeft,
+                    task.getStatus().name(),
+                    todos
+            ));
+        }
+
+        return new TaskResponseDTO.MyTasksResponse(
+                total,
+                completed,
+                total - completed,
+                myTasks
+        );
     }
 }
