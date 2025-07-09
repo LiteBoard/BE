@@ -27,6 +27,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2Response oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
 
         String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        String picture = oAuth2Response.getPicture();
+
         Member existData = memberRepository.findByUsername(username);
 
         Member member;
@@ -36,10 +38,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .email(oAuth2Response.getEmail())
                     .name(oAuth2Response.getName())
                     .role(MemberRole.USER)
+                    .picture(picture)
                     .build();
             memberRepository.save(member);
         } else {
-            member = existData.update(oAuth2Response.getEmail(), oAuth2Response.getName());
+            member = existData.update(oAuth2Response.getEmail(), oAuth2Response.getName(), oAuth2Response.getPicture());
             memberRepository.save(member);
         }
 
@@ -47,6 +50,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .email(member.getEmail())
                 .name(member.getName())
                 .role(member.getRole().name())
+                .picture(member.getPicture())
                 .build();
 
         return new CustomOAuth2User(userDTO);

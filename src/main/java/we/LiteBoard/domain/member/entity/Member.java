@@ -28,6 +28,7 @@ public class Member {
     private String username;
     private String name;
     private String email;
+    private String picture;
 
     @Enumerated(EnumType.STRING)
     private MemberRole role;
@@ -61,9 +62,10 @@ public class Member {
     private List<Notification> receivedNotifications = new ArrayList<>();
 
 
-    public Member update(String email, String name) {
+    public Member update(String email, String name, String picture) {
         this.email = email;
         this.name = name;
+        this.picture = picture;
         return this;
     }
 
