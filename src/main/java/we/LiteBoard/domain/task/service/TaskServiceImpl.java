@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import we.LiteBoard.domain.category.entity.Category;
 import we.LiteBoard.domain.category.repository.CategoryRepository;
+import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.member.repository.MemberRepository;
 import we.LiteBoard.domain.task.dto.TaskRequestDTO;
@@ -130,7 +131,10 @@ public class TaskServiceImpl implements TaskService {
         int total = myTasks.stream().mapToInt(TaskResponseDTO.MyTask::totalTodoCount).sum();
         int completed = myTasks.stream().mapToInt(TaskResponseDTO.MyTask::completedTodoCount).sum();
 
+        MemberResponseDTO.Detail myInfo = MemberResponseDTO.Detail.from(member);
+
         return new TaskResponseDTO.MyTasksResponse(
+                myInfo,
                 total,
                 completed,
                 total - completed,

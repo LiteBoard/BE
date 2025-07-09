@@ -59,6 +59,7 @@ public class TaskResponseDTO {
 
     @Schema(description = "내 업무 전체 응답 DTO")
     public record MyTasksResponse(
+            @Schema(description = "내 정보") MemberResponseDTO.Detail myInfo,
             @Schema(description = "전체 Todo 수") int totalTodoCount,
             @Schema(description = "완료된 Todo 수") int completedTodoCount,
             @Schema(description = "미완료 Todo 수") int pendingTodoCount,

@@ -18,4 +18,17 @@ public class MemberResponseDTO {
             );
         }
     }
+
+    @Schema(description = "멤버 이름 응답 DTO")
+    public record Detail(
+            @Schema(description = "멤버 ID") Long id,
+            @Schema(description = "이름") String name
+    ) {
+        public static Detail from(Member member) {
+            return new Detail(
+                    member.getId(),
+                    member.getName()
+            );
+        }
+    }
 }
