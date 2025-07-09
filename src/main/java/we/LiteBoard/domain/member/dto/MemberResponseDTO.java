@@ -19,15 +19,17 @@ public class MemberResponseDTO {
         }
     }
 
-    @Schema(description = "멤버 이름 응답 DTO")
+    @Schema(description = "멤버 조회 응답 DTO")
     public record Detail(
             @Schema(description = "멤버 ID") Long id,
-            @Schema(description = "이름") String name
+            @Schema(description = "이름") String name,
+            @Schema(description = "프로필 사진 주소") String profileUrl
     ) {
         public static Detail from(Member member) {
             return new Detail(
                     member.getId(),
-                    member.getName()
+                    member.getName(),
+                    member.getPicture()
             );
         }
     }
