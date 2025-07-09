@@ -3,7 +3,9 @@ package we.LiteBoard.domain.task.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.task.entity.Task;
+import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.global.exception.CustomException;
 import we.LiteBoard.global.exception.ErrorCode;
 
@@ -41,5 +43,17 @@ public class TaskRepositoryImpl implements TaskRepository {
     @Override
     public void deleteById(Long taskId) {
         taskJpaRepository.deleteById(taskId);
+    }
+
+    @Override
+    public List<Task> findByMemberAndStatuses(Member member, List<Status> statuses) {
+        return queryFactory
+                .selectFrom(task)
+                .where(
+                        task.member.eq(member),
+                        task.status.in(statuses)
+                )
+                .orderBy(task.endDate.asc().nullsLast())
+                .fetch();
     }
 }

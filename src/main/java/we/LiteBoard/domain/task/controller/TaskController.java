@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.task.dto.TaskRequestDTO;
 import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.service.TaskService;
+import we.LiteBoard.global.common.annotation.CurrentMember;
 import we.LiteBoard.global.response.SuccessResponse;
 
 import java.util.List;
@@ -62,4 +64,13 @@ public class TaskController {
         taskService.deleteById(taskId);
         return SuccessResponse.ok("업무 삭제에 성공했습니다.");
     }
+
+    @GetMapping("/tasks")
+    @Operation(summary = "내 업무 조회", description = "내가 담당하고 있는 진행 중인 업무와 Todo 현황을 조회합니다.")
+    public SuccessResponse<TaskResponseDTO.MyTasksResponse> getMyTasks(
+            @CurrentMember Member currentMember
+    ) {
+        return SuccessResponse.ok(taskService.getMyInProgressTasks(currentMember));
+    }
+
 }

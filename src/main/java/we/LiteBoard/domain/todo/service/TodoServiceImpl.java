@@ -11,7 +11,10 @@ import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
 import we.LiteBoard.domain.todo.entity.Todo;
 import we.LiteBoard.domain.todo.repository.TodoRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,6 +43,9 @@ public class TodoServiceImpl implements TodoService {
                 .member(currentMember)
                 .build();
 
+        task.getTodos().add(todo);
+        task.refreshStatus();
+
         return TodoResponseDTO.Upsert.from(todoRepository.save(todo).getId());
     }
 
@@ -61,12 +67,24 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional
     public List<TodoResponseDTO.Detail> toggleTodos(List<Long> todoIds) {
-        return todoIds.stream()
-                .map(todoRepository::getById)
-                .peek(Todo::toggle)
-                .map(TodoResponseDTO.Detail::from)
-                .toList();
+        Map<Task, Boolean> affectedTasks = new HashMap<>();
+
+        List<TodoResponseDTO.Detail> responses = new ArrayList<>();
+
+        for (Long todoId : todoIds) {
+            Todo todo = todoRepository.getById(todoId);
+            todo.toggle();
+            affectedTasks.put(todo.getTask(), true);
+            responses.add(TodoResponseDTO.Detail.from(todo));
+        }
+
+        for (Task task : affectedTasks.keySet()) {
+            task.refreshStatus();
+        }
+
+        return responses;
     }
+
 
     @Override
     @Transactional

@@ -1,5 +1,6 @@
 package we.LiteBoard.domain.task.service;
 
+import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.task.dto.TaskRequestDTO;
 import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 
@@ -11,4 +12,5 @@ public interface TaskService {
     TaskResponseDTO.Detail getById(Long taskId);
     TaskResponseDTO.Upsert update(Long taskId, TaskRequestDTO.Update request);
     void deleteById(Long taskId);
+    TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member currentMember);
 }
