@@ -38,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request) {
+    public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request, Member currentMember) {
         Category category = categoryRepository.getById(categoryId);
         Member member = memberRepository.findById(request.memberId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
@@ -54,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
                 .build();
 
         Task saved = taskRepository.save(task);
-        notificationService.notifyTaskAssigned(saved);
+        notificationService.notifyTaskAssigned(saved, currentMember);
 
         return TaskResponseDTO.Upsert.from(saved.getId());
     }

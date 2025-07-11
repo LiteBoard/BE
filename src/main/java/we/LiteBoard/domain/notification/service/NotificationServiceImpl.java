@@ -7,6 +7,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.notification.dto.NotificationResponseDTO;
 import we.LiteBoard.domain.notification.entity.Notification;
+import we.LiteBoard.domain.notification.enumerate.NotificationType;
 import we.LiteBoard.domain.notification.repository.NotificationRepository;
 import we.LiteBoard.domain.notification.sse.SseEmitterRepository;
 import we.LiteBoard.domain.task.entity.Task;
@@ -56,24 +57,36 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     @Transactional
-    public void notifyTaskAssigned(Task task) {
+    public void notifyTaskAssigned(Task task, Member sender) {
         Member receiver = task.getMember();
-        // 수정 필요
-        String title = "새로운 업무가 배정되었습니다.";
-        String content = "업무 제목: " + task.getTitle();
 
+        sendNotification(
+                receiver,
+                sender,
+                NotificationType.TASK_ASSIGNED,
+                "새로운 업무가 배정되었습니다.",
+                "업무 제목: " + task.getTitle()
+        );
+    }
+
+    private void sendNotification(
+            Member receiver,
+            Member sender,
+            NotificationType type,
+            String title,
+            String content
+    ) {
         Notification notification = Notification.builder()
                 .title(title)
                 .content(content)
                 .receiver(receiver)
-                .sender(task.getMember())
+                .sender(sender)
+                .type(type)
                 .receivedAt(LocalDateTime.now())
                 .build();
 
         notificationRepository.save(notification);
         NotificationResponseDTO.Detail response = NotificationResponseDTO.Detail.from(notification);
-
-        // SSE 전송
         sseEmitterRepository.send(receiver.getId(), response);
     }
 }
