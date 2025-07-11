@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.member.repository.MemberRepository;
+import we.LiteBoard.domain.notification.service.NotificationService;
 import we.LiteBoard.domain.task.entity.Task;
+import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.task.repository.TaskRepository;
 import we.LiteBoard.domain.todo.dto.TodoRequestDTO;
 import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
@@ -23,24 +26,30 @@ public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
     private final TaskRepository taskRepository;
+    private final MemberRepository memberRepository;
+    private final NotificationService notificationService;
 
     /**
      * 투두 생성
-     * @param currentMember 요청 보내는 회원 - 업무 담당자
      * @param taskId TODO가 속할 상위 업무 ID
      * @param request 생성할 내용
      * @return 생성된
      */
     @Override
     @Transactional
-    public TodoResponseDTO.Upsert create(Member currentMember, Long taskId, TodoRequestDTO.Upsert request) {
+    public TodoResponseDTO.Upsert create(Long taskId, TodoRequestDTO.Upsert request) {
         Task task = taskRepository.getById(taskId);
+
+        Member member = null;
+        if (request.memberId() != null) {
+            member = memberRepository.findById(request.memberId()).get();
+        }
 
         Todo todo = Todo.builder()
                 .description(request.description())
                 .done(false)
                 .task(task)
-                .member(currentMember)
+                .member(member)
                 .build();
 
         task.getTodos().add(todo);
@@ -76,10 +85,20 @@ public class TodoServiceImpl implements TodoService {
             todo.toggle();
             affectedTasks.put(todo.getTask(), true);
             responses.add(TodoResponseDTO.Detail.from(todo));
+
+            // TODOs 완료 알림
+            if (todo.isDone()) {
+                notificationService.notifyTodoCompleted(todo);
+            }
         }
 
         for (Task task : affectedTasks.keySet()) {
-            task.refreshStatus();
+            boolean changed = task.refreshStatus();
+
+            // 완료 상태가 되면 알림 전송
+            if (changed && task.getStatus() == Status.COMPLETED) {
+                notificationService.notifyTaskCompleted(task);
+            }
         }
 
         return responses;

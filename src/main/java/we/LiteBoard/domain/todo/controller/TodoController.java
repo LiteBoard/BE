@@ -5,11 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.todo.dto.TodoRequestDTO;
 import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
 import we.LiteBoard.domain.todo.service.TodoService;
-import we.LiteBoard.global.common.annotation.CurrentMember;
 import we.LiteBoard.global.response.SuccessResponse;
 
 import java.util.List;
@@ -25,11 +23,10 @@ public class TodoController {
     @PostMapping("/tasks/{taskId}/todos")
     @Operation(summary = "TODO 생성", description = "업무에 TODO를 생성합니다.")
     public SuccessResponse<TodoResponseDTO.Upsert> create(
-            @CurrentMember Member currentMember,
             @PathVariable Long taskId,
             @RequestBody @Valid TodoRequestDTO.Upsert request
     ) {
-        return SuccessResponse.ok(todoService.create(currentMember, taskId, request));
+        return SuccessResponse.ok(todoService.create(taskId, request));
     }
 
     @GetMapping("/tasks/{taskId}/todos")

@@ -29,7 +29,7 @@ public class Todo {
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID", nullable = false)
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     public void updateDescription(String description) {
