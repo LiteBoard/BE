@@ -41,6 +41,15 @@ public class RequestCard {
     @OneToMany(mappedBy = "requestCard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestCardTodo> todos = new ArrayList<>();
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void removeTodo(RequestCardTodo todo) {
+        this.todos.remove(todo);
+        todo.setRequestCard(null);
+    }
+
     /** 연관 관계 편의 메서드 */
     public void addTodo(RequestCardTodo todo) {
         todos.add(todo);

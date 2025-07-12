@@ -25,11 +25,10 @@ public class TodoController {
     @PostMapping("/tasks/{taskId}/todos")
     @Operation(summary = "TODO 생성", description = "업무에 TODO를 생성합니다.")
     public SuccessResponse<TodoResponseDTO.Upsert> create(
-            @CurrentMember Member currentMember,
             @PathVariable Long taskId,
             @RequestBody @Valid TodoRequestDTO.Upsert request
     ) {
-        return SuccessResponse.ok(todoService.create(currentMember, taskId, request));
+        return SuccessResponse.ok(todoService.create(taskId, request));
     }
 
     @GetMapping("/tasks/{taskId}/todos")
@@ -42,9 +41,10 @@ public class TodoController {
     @Operation(summary = "TODO 수정", description = "TODO 내용을 수정합니다.")
     public SuccessResponse<TodoResponseDTO.Upsert> update(
             @PathVariable Long todoId,
-            @RequestBody @Valid TodoRequestDTO.Upsert request
+            @RequestBody @Valid TodoRequestDTO.Upsert request,
+            @CurrentMember Member member
     ) {
-        return SuccessResponse.ok(todoService.update(todoId, request));
+        return SuccessResponse.ok(todoService.update(todoId, request, member));
     }
 
     @PatchMapping("/todos/toggle")

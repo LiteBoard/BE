@@ -26,7 +26,7 @@ public class MemberProjectServiceImpl implements MemberProjectService {
     @Transactional
     public void addMemberToProject(Long projectId, MemberProjectRequestDTO.AddMember request) {
         Project project = projectRepository.getById(projectId);
-        Member member = memberRepository.findById(request.memberId()).get();
+        Member member = memberRepository.getById(request.memberId());
 
         if (memberProjectRepository.existsByProjectAndMember(project.getId(), member.getId())) {
             throw new CustomException(ErrorCode.MEMBER_ALREADY_IN_PROJECT);

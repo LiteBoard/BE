@@ -3,6 +3,7 @@ package we.LiteBoard.domain.todo.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.todo.entity.Todo;
 import we.LiteBoard.global.exception.CustomException;
 import we.LiteBoard.global.exception.ErrorCode;
@@ -40,5 +41,17 @@ public class TodoRepositoryImpl implements TodoRepository {
     @Override
     public void deleteById(Long id) {
         todoJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Todo> findTodayTodosByMember(Long memberId) {
+        return queryFactory
+                .selectFrom(todo)
+                .where(
+                        todo.member.id.eq(memberId),
+                        todo.done.isFalse(),
+                        todo.task.status.eq(Status.IN_PROGRESS)
+                )
+                .fetch();
     }
 }

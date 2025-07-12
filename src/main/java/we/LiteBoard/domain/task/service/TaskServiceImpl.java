@@ -8,15 +8,16 @@ import we.LiteBoard.domain.category.repository.CategoryRepository;
 import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.member.repository.MemberRepository;
+import we.LiteBoard.domain.notification.service.NotificationService;
 import we.LiteBoard.domain.task.dto.TaskRequestDTO;
 import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.task.repository.TaskRepository;
-import we.LiteBoard.global.exception.CustomException;
-import we.LiteBoard.global.exception.ErrorCode;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
+    private final NotificationService notificationService;
 
     /**
      * 업무 생성
@@ -36,10 +38,9 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request) {
+    public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request, Member currentMember) {
         Category category = categoryRepository.getById(categoryId);
-        Member member = memberRepository.findById(request.memberId())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+        Member member = memberRepository.getById(request.memberId());
 
         Task task = Task.builder()
                 .title(request.title())
@@ -51,7 +52,10 @@ public class TaskServiceImpl implements TaskService {
                 .member(member)
                 .build();
 
-        return TaskResponseDTO.Upsert.from(taskRepository.save(task).getId());
+        Task saved = taskRepository.save(task);
+        notificationService.notifyTaskAssigned(saved, currentMember);
+
+        return TaskResponseDTO.Upsert.from(saved.getId());
     }
 
     /**
@@ -76,8 +80,6 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO.Detail getById(Long taskId) {
         Task task = taskRepository.getById(taskId);
-        task.refreshStatus();
-
         return TaskResponseDTO.Detail.from(task);
     }
 
@@ -91,6 +93,8 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO.Upsert update(Long taskId, TaskRequestDTO.Update request) {
         Task task = taskRepository.getById(taskId);
+        LocalDate previousEndDate = task.getEndDate();
+
         task.update(
                 request.title(),
                 request.description(),
@@ -98,6 +102,19 @@ public class TaskServiceImpl implements TaskService {
                 request.startDate(),
                 request.endDate()
         );
+
+        boolean changed = task.refreshStatus();
+
+        // 완료 알림
+        if (changed && task.getStatus() == Status.COMPLETED) {
+            notificationService.notifyTaskCompleted(task);
+        }
+
+        // 마감일 변경 알림
+        if (!Objects.equals(previousEndDate, request.endDate())) {
+            notificationService.notifyTaskDueDateChanged(task);
+        }
+
         return TaskResponseDTO.Upsert.from(task.getId());
     }
 
@@ -117,12 +134,9 @@ public class TaskServiceImpl implements TaskService {
      * @return 진행 중인 내 업무 정보 반환
      */
     @Override
-    @Transactional // 업무 상태 변환 필요 (지연된 경우)
     public TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member member) {
         List<Status> targetStatuses = List.of(Status.IN_PROGRESS, Status.DELAYED);
         List<Task> tasks = taskRepository.findByMemberAndStatuses(member, targetStatuses);
-
-        tasks.forEach(Task::refreshStatus);
 
         List<TaskResponseDTO.MyTask> myTasks = tasks.stream()
                 .map(TaskResponseDTO.MyTask::from)

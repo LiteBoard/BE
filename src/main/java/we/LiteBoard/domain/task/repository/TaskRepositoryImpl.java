@@ -56,4 +56,13 @@ public class TaskRepositoryImpl implements TaskRepository {
                 .orderBy(task.endDate.asc().nullsLast())
                 .fetch();
     }
+
+    @Override
+    public List<Task> findTasksToCheckDelay() {
+        return queryFactory
+                .selectFrom(task)
+                .where(task.status.ne(Status.COMPLETED)
+                        .and(task.status.ne(Status.DELAYED)))
+                .fetch();
+    }
 }

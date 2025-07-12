@@ -3,6 +3,7 @@ package we.LiteBoard.domain.notification.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.notification.enumerate.NotificationType;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,10 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "NOTIFICATION_ID")
     private Long id;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
 
     @Column(nullable = false)
     private String title;

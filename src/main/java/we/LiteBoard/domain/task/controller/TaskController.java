@@ -26,9 +26,10 @@ public class TaskController {
     @Operation(summary = "업무 생성", description = "카테고리에 업무를 생성합니다.")
     public SuccessResponse<TaskResponseDTO.Upsert> create(
             @PathVariable Long categoryId,
-            @RequestBody @Valid TaskRequestDTO.Create request
+            @RequestBody @Valid TaskRequestDTO.Create request,
+            @CurrentMember Member member
     ) {
-        return SuccessResponse.ok(taskService.create(categoryId, request));
+        return SuccessResponse.ok(taskService.create(categoryId, request, member));
     }
 
     @GetMapping("/categories/{categoryId}/tasks")

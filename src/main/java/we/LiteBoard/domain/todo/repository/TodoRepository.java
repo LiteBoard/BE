@@ -9,4 +9,5 @@ public interface TodoRepository {
     Todo getById(Long id);
     List<Todo> findAllByTaskId(Long taskId);
     void deleteById(Long id);
+    List<Todo> findTodayTodosByMember(Long id);
 }

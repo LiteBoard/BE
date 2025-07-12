@@ -4,17 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.member.repository.MemberRepository;
+import we.LiteBoard.domain.notification.service.NotificationService;
 import we.LiteBoard.domain.task.entity.Task;
+import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.task.repository.TaskRepository;
 import we.LiteBoard.domain.todo.dto.TodoRequestDTO;
 import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
 import we.LiteBoard.domain.todo.entity.Todo;
 import we.LiteBoard.domain.todo.repository.TodoRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,24 +23,30 @@ public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
     private final TaskRepository taskRepository;
+    private final MemberRepository memberRepository;
+    private final NotificationService notificationService;
 
     /**
      * 투두 생성
-     * @param currentMember 요청 보내는 회원 - 업무 담당자
      * @param taskId TODO가 속할 상위 업무 ID
      * @param request 생성할 내용
      * @return 생성된
      */
     @Override
     @Transactional
-    public TodoResponseDTO.Upsert create(Member currentMember, Long taskId, TodoRequestDTO.Upsert request) {
+    public TodoResponseDTO.Upsert create(Long taskId, TodoRequestDTO.Upsert request) {
         Task task = taskRepository.getById(taskId);
+
+        Member member = null;
+        if (request.memberId() != null) {
+            member = memberRepository.getById(request.memberId());
+        }
 
         Todo todo = Todo.builder()
                 .description(request.description())
                 .done(false)
                 .task(task)
-                .member(currentMember)
+                .member(member)
                 .build();
 
         task.getTodos().add(todo);
@@ -58,9 +64,26 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     @Transactional
-    public TodoResponseDTO.Upsert update(Long todoId, TodoRequestDTO.Upsert request) {
+    public TodoResponseDTO.Upsert update(Long todoId, TodoRequestDTO.Upsert request, Member currentMember) {
         Todo todo = todoRepository.getById(todoId);
-        todo.updateDescription(request.description());
+        Member previousMember = todo.getMember();
+
+        Member newMember = previousMember;
+
+        boolean isDifferentMember =
+                request.memberId() != null &&
+                        (previousMember == null || !Objects.equals(previousMember.getId(), request.memberId()));
+
+        if (isDifferentMember) {
+            newMember = memberRepository.getById(request.memberId());
+        }
+
+        todo.update(request.description(), newMember);
+
+        // 담당자 변경 시 알림 전송
+        if (previousMember == null || !Objects.equals(previousMember.getId(), newMember.getId())) {
+            notificationService.notifyTodoAssigned(todo, currentMember);
+        }
         return TodoResponseDTO.Upsert.from(todo.getId());
     }
 
@@ -76,10 +99,20 @@ public class TodoServiceImpl implements TodoService {
             todo.toggle();
             affectedTasks.put(todo.getTask(), true);
             responses.add(TodoResponseDTO.Detail.from(todo));
+
+            // TODOs 완료 알림
+            if (todo.isDone()) {
+                notificationService.notifyTodoCompleted(todo);
+            }
         }
 
         for (Task task : affectedTasks.keySet()) {
-            task.refreshStatus();
+            boolean changed = task.refreshStatus();
+
+            // 완료 상태가 되면 알림 전송
+            if (changed && task.getStatus() == Status.COMPLETED) {
+                notificationService.notifyTaskCompleted(task);
+            }
         }
 
         return responses;

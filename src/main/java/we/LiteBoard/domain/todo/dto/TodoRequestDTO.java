@@ -12,7 +12,10 @@ public class TodoRequestDTO {
     @Schema(description = "TODO 생성/수정 요청 DTO")
     public record Upsert(
             @Schema(description = "TODO 내용", example = "시스템 아키텍처 설계")
-            @NotBlank String description
+            @NotBlank String description,
+
+            @Schema(description = "담당자 ID", example = "1")
+            Long memberId
     ) {}
 
     @Schema(description = "TODO 토글 상태 변경 요청 DTO")

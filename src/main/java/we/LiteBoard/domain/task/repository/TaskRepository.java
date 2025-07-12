@@ -12,4 +12,5 @@ public interface TaskRepository {
     Task getById(Long taskId);
     void deleteById(Long taskId);
     List<Task> findByMemberAndStatuses(Member member, List<Status> statuses);
+    List<Task> findTasksToCheckDelay();
 }
