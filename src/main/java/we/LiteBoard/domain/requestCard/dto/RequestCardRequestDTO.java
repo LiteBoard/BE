@@ -2,6 +2,7 @@ package we.LiteBoard.domain.requestCard.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class RequestCardRequestDTO {
             String content,
 
             @Schema(description = "요청할 Todo 리스트", example = "[\"API 문서 작성\", \"테스트 코드 작성\"]")
-            @NotBlank
+            @NotEmpty
             List<String> todoDescriptions
     ) {}
 
@@ -26,7 +27,7 @@ public class RequestCardRequestDTO {
             String content,
 
             @Schema(description = "수정할 Todo 리스트", example = "[\"수정된 할 일1\", \"수정된 할 일2\"]")
-            @NotBlank
+            @NotEmpty
             List<String> todoDescriptions
     ) {}
 
