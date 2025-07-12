@@ -64,22 +64,26 @@ public class Task {
     }
 
     /** 업무 상태 갱신 메서드 */
-    public void refreshStatus() {
+    public boolean refreshStatus() {
+        Status previous = this.status;
+
         if (todos.isEmpty()) {
-            this.status = Status.IN_PROGRESS;
-            return;
-        }
-
-        boolean allDone = todos.stream().allMatch(Todo::isDone);
-        if (allDone) {
-            this.status = Status.COMPLETED;
-            return;
-        }
-
-        if (this.endDate != null && LocalDate.now().isBefore(this.endDate.plusDays(1))) {
-            this.status = Status.IN_PROGRESS;
+            if (this.endDate != null && LocalDate.now().isAfter(this.endDate)) {
+                this.status = Status.DELAYED;
+            } else {
+                this.status = Status.IN_PROGRESS;
+            }
         } else {
-            this.status = Status.DELAYED;
+            boolean allDone = todos.stream().allMatch(Todo::isDone);
+            if (allDone) {
+                this.status = Status.COMPLETED;
+            } else if (this.endDate != null && LocalDate.now().isAfter(this.endDate)) {
+                this.status = Status.DELAYED;
+            } else {
+                this.status = Status.IN_PROGRESS;
+            }
         }
+
+        return this.status != previous;
     }
 }

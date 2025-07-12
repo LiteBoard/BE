@@ -15,4 +15,14 @@ public class RequestCardRequestDTO {
             @Schema(description = "요청할 Todo 리스트", example = "[\"API 문서 작성\", \"테스트 코드 작성\"]")
             List<String> todoDescriptions
     ) {}
+
+    @Schema(description = "업무 요청 수정 요청 DTO")
+    public record Update(
+            @Schema(description = "수정할 업무 요청 내용", example = "수정된 업무 요청 내용입니다.")
+            String content,
+
+            @Schema(description = "수정할 Todo 리스트", example = "[\"수정된 할 일1\", \"수정된 할 일2\"]")
+            List<String> todoDescriptions
+    ) {}
+
 }

@@ -15,7 +15,8 @@ public enum NotificationType {
     TODO_COMPLETED("협업 완료"),
 
     REQUEST_CARD_CREATED("업무 요청 등록"),
-    REQUEST_CARD_UPDATED("업무 요청 변경/삭제"),
+    REQUEST_CARD_UPDATED("업무 요청 수정"),
+    REQUEST_CARD_DELETED("업무 요청 삭제"),
     REQUEST_CARD_TODO_EMPTY("요청카드 미완성"),
 
     TODAY_TODO_SUMMARY("오늘의 할 일");

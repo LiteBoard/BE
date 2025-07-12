@@ -17,7 +17,9 @@ import we.LiteBoard.domain.task.repository.TaskRepository;
 import we.LiteBoard.global.exception.CustomException;
 import we.LiteBoard.global.exception.ErrorCode;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,8 +83,6 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO.Detail getById(Long taskId) {
         Task task = taskRepository.getById(taskId);
-        task.refreshStatus();
-
         return TaskResponseDTO.Detail.from(task);
     }
 
@@ -96,6 +96,8 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO.Upsert update(Long taskId, TaskRequestDTO.Update request) {
         Task task = taskRepository.getById(taskId);
+        LocalDate previousEndDate = task.getEndDate();
+
         task.update(
                 request.title(),
                 request.description(),
@@ -103,6 +105,19 @@ public class TaskServiceImpl implements TaskService {
                 request.startDate(),
                 request.endDate()
         );
+
+        boolean changed = task.refreshStatus();
+
+        // 완료 알림
+        if (changed && task.getStatus() == Status.COMPLETED) {
+            notificationService.notifyTaskCompleted(task);
+        }
+
+        // 마감일 변경 알림
+        if (!Objects.equals(previousEndDate, request.endDate())) {
+            notificationService.notifyTaskDueDateChanged(task);
+        }
+
         return TaskResponseDTO.Upsert.from(task.getId());
     }
 
@@ -122,12 +137,9 @@ public class TaskServiceImpl implements TaskService {
      * @return 진행 중인 내 업무 정보 반환
      */
     @Override
-    @Transactional // 업무 상태 변환 필요 (지연된 경우)
     public TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member member) {
         List<Status> targetStatuses = List.of(Status.IN_PROGRESS, Status.DELAYED);
         List<Task> tasks = taskRepository.findByMemberAndStatuses(member, targetStatuses);
-
-        tasks.forEach(Task::refreshStatus);
 
         List<TaskResponseDTO.MyTask> myTasks = tasks.stream()
                 .map(TaskResponseDTO.MyTask::from)

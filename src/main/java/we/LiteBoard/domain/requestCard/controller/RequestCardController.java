@@ -31,6 +31,15 @@ public class RequestCardController {
         return SuccessResponse.ok(requestCardService.create(currentMember, taskId, request));
     }
 
+    @PatchMapping("/request-cards/{requestCardId}")
+    @Operation(summary = "업무 요청 수정", description = "업무 요청의 내용을 수정합니다.")
+    public SuccessResponse<RequestCardResponseDTO.Upsert> updateRequestCard(
+            @PathVariable Long requestCardId,
+            @RequestBody RequestCardRequestDTO.Update request
+    ) {
+        return SuccessResponse.ok(requestCardService.update(requestCardId, request));
+    }
+
     @GetMapping("/tasks/{taskId}/request-cards")
     @Operation(summary = "특정 업무의 업무 요청 전체 조회", description = "특정 업무에 속한 모든 요청 메시지 및 할 일 목록을 조회합니다.")
     public SuccessResponse<List<RequestCardResponseDTO.Detail>> getRequestCardsByTask(

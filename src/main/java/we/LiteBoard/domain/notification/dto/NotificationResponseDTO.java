@@ -1,9 +1,9 @@
 package we.LiteBoard.domain.notification.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.format.annotation.DateTimeFormat;
 import we.LiteBoard.domain.notification.entity.Notification;
 import we.LiteBoard.domain.notification.enumerate.NotificationType;
+import we.LiteBoard.global.common.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
