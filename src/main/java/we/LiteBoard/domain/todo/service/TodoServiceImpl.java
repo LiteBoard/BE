@@ -13,8 +13,6 @@ import we.LiteBoard.domain.todo.dto.TodoRequestDTO;
 import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
 import we.LiteBoard.domain.todo.entity.Todo;
 import we.LiteBoard.domain.todo.repository.TodoRepository;
-import we.LiteBoard.global.exception.CustomException;
-import we.LiteBoard.global.exception.ErrorCode;
 
 import java.util.*;
 
@@ -41,7 +39,7 @@ public class TodoServiceImpl implements TodoService {
 
         Member member = null;
         if (request.memberId() != null) {
-            member = memberRepository.findById(request.memberId()).get();
+            member = memberRepository.getById(request.memberId());
         }
 
         Todo todo = Todo.builder()
@@ -77,8 +75,7 @@ public class TodoServiceImpl implements TodoService {
                         (previousMember == null || !Objects.equals(previousMember.getId(), request.memberId()));
 
         if (isDifferentMember) {
-            newMember = memberRepository.findById(request.memberId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+            newMember = memberRepository.getById(request.memberId());
         }
 
         todo.update(request.description(), newMember);

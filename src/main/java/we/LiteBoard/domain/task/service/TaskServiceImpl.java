@@ -14,8 +14,6 @@ import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.task.repository.TaskRepository;
-import we.LiteBoard.global.exception.CustomException;
-import we.LiteBoard.global.exception.ErrorCode;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,8 +40,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request, Member currentMember) {
         Category category = categoryRepository.getById(categoryId);
-        Member member = memberRepository.findById(request.memberId())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+        Member member = memberRepository.getById(request.memberId());
 
         Task task = Task.builder()
                 .title(request.title())
