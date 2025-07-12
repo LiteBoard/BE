@@ -32,8 +32,9 @@ public class Todo {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public void updateDescription(String description) {
+    public void update(String description, Member member) {
         this.description = description;
+        this.member = member;
     }
 
     public void toggle() {

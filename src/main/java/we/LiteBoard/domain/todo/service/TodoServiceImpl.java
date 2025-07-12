@@ -13,11 +13,10 @@ import we.LiteBoard.domain.todo.dto.TodoRequestDTO;
 import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
 import we.LiteBoard.domain.todo.entity.Todo;
 import we.LiteBoard.domain.todo.repository.TodoRepository;
+import we.LiteBoard.global.exception.CustomException;
+import we.LiteBoard.global.exception.ErrorCode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -67,9 +66,27 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     @Transactional
-    public TodoResponseDTO.Upsert update(Long todoId, TodoRequestDTO.Upsert request) {
+    public TodoResponseDTO.Upsert update(Long todoId, TodoRequestDTO.Upsert request, Member currentMember) {
         Todo todo = todoRepository.getById(todoId);
-        todo.updateDescription(request.description());
+        Member previousMember = todo.getMember();
+
+        Member newMember = previousMember;
+
+        boolean isDifferentMember =
+                request.memberId() != null &&
+                        (previousMember == null || !Objects.equals(previousMember.getId(), request.memberId()));
+
+        if (isDifferentMember) {
+            newMember = memberRepository.findById(request.memberId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXIST));
+        }
+
+        todo.update(request.description(), newMember);
+
+        // 담당자 변경 시 알림 전송
+        if (previousMember == null || !Objects.equals(previousMember.getId(), newMember.getId())) {
+            notificationService.notifyTodoAssigned(todo, currentMember);
+        }
         return TodoResponseDTO.Upsert.from(todo.getId());
     }
 

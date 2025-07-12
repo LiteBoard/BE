@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.todo.dto.TodoRequestDTO;
 import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
 import we.LiteBoard.domain.todo.service.TodoService;
+import we.LiteBoard.global.common.annotation.CurrentMember;
 import we.LiteBoard.global.response.SuccessResponse;
 
 import java.util.List;
@@ -39,9 +41,10 @@ public class TodoController {
     @Operation(summary = "TODO 수정", description = "TODO 내용을 수정합니다.")
     public SuccessResponse<TodoResponseDTO.Upsert> update(
             @PathVariable Long todoId,
-            @RequestBody @Valid TodoRequestDTO.Upsert request
+            @RequestBody @Valid TodoRequestDTO.Upsert request,
+            @CurrentMember Member member
     ) {
-        return SuccessResponse.ok(todoService.update(todoId, request));
+        return SuccessResponse.ok(todoService.update(todoId, request, member));
     }
 
     @PatchMapping("/todos/toggle")
