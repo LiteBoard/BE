@@ -1,6 +1,7 @@
 package we.LiteBoard.domain.notification.scheduler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import we.LiteBoard.domain.todo.repository.TodoRepository;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TodayTodoNotifier {
@@ -26,9 +28,12 @@ public class TodayTodoNotifier {
         List<Member> members = memberRepository.findAll();
 
         for (Member member : members) {
-            List<Todo> todos = todoRepository.findTodayTodosByMember(member.getId());
-            notificationService.notifyTodayTodoSummary(member, todos);
+            try {
+                List<Todo> todos = todoRepository.findTodayTodosByMember(member.getId());
+                notificationService.notifyTodayTodoSummary(member, todos);
+            } catch (Exception e) {
+                log.error("Failed to send today's TODO summary to memberId={}", member.getId(), e);
+            }
         }
     }
 }
-

@@ -48,7 +48,9 @@ public class NotificationServiceImpl implements NotificationService {
                     .data("Success on SSE connect")
                     .id(String.valueOf(System.currentTimeMillis())));
         } catch (IOException e) {
-            throw new RuntimeException("SSE connect Fail", e);
+            log.error("Failed to send initial SSE event to member {}", memberId, e);
+            sseEmitterRepository.delete(memberId);
+            throw new IllegalStateException("SSE connect Fail", e);
         }
 
         return emitter;

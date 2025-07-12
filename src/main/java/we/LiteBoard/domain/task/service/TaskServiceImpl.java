@@ -8,7 +8,7 @@ import we.LiteBoard.domain.category.repository.CategoryRepository;
 import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.member.repository.MemberRepository;
-import we.LiteBoard.domain.notification.service.NotificationServiceImpl;
+import we.LiteBoard.domain.notification.service.NotificationService;
 import we.LiteBoard.domain.task.dto.TaskRequestDTO;
 import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
@@ -28,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
-    private final NotificationServiceImpl notificationService;
+    private final NotificationService notificationService;
 
     /**
      * 업무 생성

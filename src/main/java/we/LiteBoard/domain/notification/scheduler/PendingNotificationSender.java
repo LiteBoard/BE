@@ -1,6 +1,7 @@
 package we.LiteBoard.domain.notification.scheduler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import we.LiteBoard.domain.requestCard.entity.RequestCard;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class PendingNotificationSender {
@@ -26,13 +28,19 @@ public class PendingNotificationSender {
                 scheduledNotificationRepository.findByNotifyTimeBeforeAndNotifiedFalse(LocalDateTime.now());
 
         for (ScheduledNotification s : targets) {
-            RequestCard card = s.getRequestCard();
+            try {
+                RequestCard card = s.getRequestCard();
 
-            if (!card.getTodos().isEmpty()) {
-                notificationService.notifyUnregisteredTodos(card);
+                if (!card.getTodos().isEmpty()) {
+                    notificationService.notifyUnregisteredTodos(card);
+                }
+
+                s.setNotified(true);
+
+            } catch (Exception e) {
+                log.error("Failed to notify unregistered todos. RequestCardId={}, ScheduledNotificationId={}",
+                        s.getRequestCard().getId(), s.getId(), e);
             }
-
-            s.setNotified(true);
         }
     }
 }

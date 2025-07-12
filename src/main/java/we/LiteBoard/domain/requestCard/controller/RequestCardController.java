@@ -2,6 +2,7 @@ package we.LiteBoard.domain.requestCard.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import we.LiteBoard.domain.member.entity.Member;
@@ -26,7 +27,7 @@ public class RequestCardController {
     public SuccessResponse<RequestCardResponseDTO.Upsert> createRequestCard(
             @CurrentMember Member currentMember,
             @PathVariable Long taskId,
-            @RequestBody RequestCardRequestDTO.Create request
+            @RequestBody @Valid RequestCardRequestDTO.Create request
     ) {
         return SuccessResponse.ok(requestCardService.create(currentMember, taskId, request));
     }
@@ -35,7 +36,7 @@ public class RequestCardController {
     @Operation(summary = "업무 요청 수정", description = "업무 요청의 내용을 수정합니다.")
     public SuccessResponse<RequestCardResponseDTO.Upsert> updateRequestCard(
             @PathVariable Long requestCardId,
-            @RequestBody RequestCardRequestDTO.Update request
+            @RequestBody @Valid RequestCardRequestDTO.Update request
     ) {
         return SuccessResponse.ok(requestCardService.update(requestCardId, request));
     }

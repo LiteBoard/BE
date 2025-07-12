@@ -1,6 +1,7 @@
 package we.LiteBoard.domain.notification.scheduler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import we.LiteBoard.domain.task.repository.TaskRepository;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DelayedTaskChecker {
@@ -25,7 +27,11 @@ public class DelayedTaskChecker {
 
         for (Task task : tasks) {
             if (task.refreshStatus() && task.getStatus() == Status.DELAYED) {
-                notificationService.notifyTaskDelayed(task);
+                try {
+                    notificationService.notifyTaskDelayed(task);
+                } catch (Exception e) {
+                    log.error("Failed to send delayed task notification for taskId={}", task.getId(), e);
+                }
             }
         }
     }

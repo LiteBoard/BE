@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import we.LiteBoard.domain.member.entity.Member;
-import we.LiteBoard.domain.notification.service.NotificationServiceImpl;
+import we.LiteBoard.domain.notification.service.NotificationService;
 import we.LiteBoard.global.common.annotation.CurrentMember;
 
 @RestController
@@ -18,7 +18,7 @@ import we.LiteBoard.global.common.annotation.CurrentMember;
 @RequestMapping("/api/v1/notifications")
 public class NotificationController {
 
-    private final NotificationServiceImpl notificationService;
+    private final NotificationService notificationService;
 
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "알림 SSE 구독", description = "SSE 연결을 통해 로그인된 사용자가 실시간 알림을 수신합니다.")
