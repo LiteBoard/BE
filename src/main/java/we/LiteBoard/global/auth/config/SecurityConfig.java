@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 import we.LiteBoard.global.auth.OAuth2.CustomSuccessHandler;
 import we.LiteBoard.global.auth.OAuth2.service.CustomOAuth2UserService;
@@ -24,7 +23,6 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
-    private final CorsFilter corsFilter;
     private final JWTUtil jwtUtil;
 
     private final String[] allowedUrls = {
@@ -41,7 +39,6 @@ public class SecurityConfig {
 
         // cors 설정
         http.cors(Customizer.withDefaults());
-        http.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class);
 
         // csrf disable
         http.csrf(AbstractHttpConfigurer::disable);
