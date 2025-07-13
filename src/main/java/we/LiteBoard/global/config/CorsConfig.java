@@ -17,6 +17,8 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("http://localhost:3000");
         config.addAllowedOriginPattern("http://localhost:8080");
+        config.addAllowedOriginPattern("https://liteBoard.site");
+        config.addAllowedOriginPattern("https://www.liteBoard.site");
 
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
