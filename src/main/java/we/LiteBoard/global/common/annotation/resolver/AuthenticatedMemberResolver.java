@@ -30,7 +30,12 @@ public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String header = webRequest.getHeader("Authorization");
 
-        String token = header.split(" ")[1];
+        if (header == null || !header.startsWith("Bearer ")) {
+            log.warn("Authorization header is missing or malformed");
+            return null;
+        }
+
+        String token = header.substring(7);
         String email = jwtUtil.getEmail(token);
         return memberService.findByEmail(email);
     }
