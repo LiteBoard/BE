@@ -6,6 +6,7 @@ import we.LiteBoard.domain.requestCard.dto.RequestCardResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.todo.dto.TodoResponseDTO;
+import we.LiteBoard.domain.todo.entity.Todo;
 import we.LiteBoard.global.common.annotation.DateFormat;
 
 import java.time.LocalDate;
@@ -35,10 +36,15 @@ public class TaskResponseDTO {
             @Schema(description = "시작일") @DateFormat LocalDate startDate,
             @Schema(description = "마감일") @DateFormat LocalDate endDate,
             @Schema(description = "담당자 정보") MemberResponseDTO.Summary member,
+            @Schema(description = "완료된 Todo 수") int completedTodoCount,
+            @Schema(description = "미완료 Todo 수") int pendingTodoCount,
             @Schema(description = "TODO 목록") List<TodoResponseDTO.Detail> todos,
             @Schema(description = "업무 요청 목록") List<RequestCardResponseDTO.Detail> requestCards
     ) {
         public static TaskResponseDTO.Detail from(Task task) {
+            int completed = (int) task.getTodos().stream().filter(Todo::isDone).count();
+            int pending = task.getTodos().size() - completed;
+
             return new TaskResponseDTO.Detail(
                     task.getId(),
                     task.getTitle(),
@@ -47,6 +53,8 @@ public class TaskResponseDTO {
                     task.getStartDate(),
                     task.getEndDate(),
                     MemberResponseDTO.Summary.from(task.getMember()),
+                    completed,
+                    pending,
                     task.getTodos().stream()
                             .map(TodoResponseDTO.Detail::from)
                             .toList(),
@@ -101,6 +109,32 @@ public class TaskResponseDTO {
             return (endDate != null)
                     ? ChronoUnit.DAYS.between(LocalDate.now(), endDate)
                     : 0;
+        }
+    }
+
+    @Schema(description = "카테고리 내 Task 요약 정보")
+    public record Summary(
+            @Schema(description = "Task ID") Long id,
+            @Schema(description = "제목") String title,
+            @Schema(description = "상태") String status,
+            @Schema(description = "시작일") @DateFormat LocalDate startDate,
+            @Schema(description = "마감일") @DateFormat LocalDate endDate,
+            @Schema(description = "완료된 Todo 수") int completedTodoCount,
+            @Schema(description = "미완료 Todo 수") int pendingTodoCount
+    ) {
+        public static TaskResponseDTO.Summary from(Task task) {
+            int completed = (int) task.getTodos().stream().filter(Todo::isDone).count();
+            int pending = task.getTodos().size() - completed;
+
+            return new TaskResponseDTO.Summary(
+                    task.getId(),
+                    task.getTitle(),
+                    task.getStatus().name(),
+                    task.getStartDate(),
+                    task.getEndDate(),
+                    completed,
+                    pending
+            );
         }
     }
 }

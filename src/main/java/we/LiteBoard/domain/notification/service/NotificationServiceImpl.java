@@ -9,6 +9,8 @@ import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.notification.application.NotificationMessage;
 import we.LiteBoard.domain.notification.application.NotificationMessageFactory;
 import we.LiteBoard.domain.notification.application.NotificationSender;
+import we.LiteBoard.domain.notification.dto.NotificationResponseDTO;
+import we.LiteBoard.domain.notification.repository.NotificationRepository;
 import we.LiteBoard.domain.notification.sse.SseEmitterRepository;
 import we.LiteBoard.domain.requestCard.entity.RequestCard;
 import we.LiteBoard.domain.task.entity.Task;
@@ -25,6 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationSender sender;
     private final SseEmitterRepository sseEmitterRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
      * SSE 구독
@@ -54,6 +57,13 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         return emitter;
+    }
+
+    @Override
+    public List<NotificationResponseDTO.Detail> getMyNotifications(Long memberId) {
+        return notificationRepository.findByReceiverId(memberId).stream()
+                .map(NotificationResponseDTO.Detail::from)
+                .toList();
     }
 
     @Override
