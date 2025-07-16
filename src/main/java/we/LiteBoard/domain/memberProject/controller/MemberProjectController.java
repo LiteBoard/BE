@@ -26,5 +26,4 @@ public class MemberProjectController {
         memberProjectService.addMemberToProject(projectId, request);
         return SuccessResponse.ok("프로젝트에 멤버 추가 성공했습니다.");
     }
-
 }
