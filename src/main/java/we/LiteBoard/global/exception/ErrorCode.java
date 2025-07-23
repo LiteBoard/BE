@@ -62,6 +62,7 @@ public enum ErrorCode {
 
     // MemberProject (프로젝트 멤버)
     MEMBER_ALREADY_IN_PROJECT("MEMBER_PROJECT_400", "멤버가 이미 프로젝트에 속해있습니다.", HttpStatus.BAD_REQUEST),
+    MEMBER_NOT_FOUND_IN_PROJECT("MEMBER_PROJECT_400", "프로젝트에서 해당 멤버를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     // Category (카테고리)
     CATEGORY_NOT_FOUND("CATEGORY404", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

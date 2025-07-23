@@ -35,7 +35,7 @@ public class TaskResponseDTO {
             @Schema(description = "상태") Status status,
             @Schema(description = "시작일") @DateFormat LocalDate startDate,
             @Schema(description = "마감일") @DateFormat LocalDate endDate,
-            @Schema(description = "담당자 정보") MemberResponseDTO.Summary member,
+            @Schema(description = "담당자 정보") MemberResponseDTO.Detail member,
             @Schema(description = "완료된 Todo 수") int completedTodoCount,
             @Schema(description = "미완료 Todo 수") int pendingTodoCount,
             @Schema(description = "TODO 목록") List<TodoResponseDTO.Detail> todos,
@@ -52,7 +52,7 @@ public class TaskResponseDTO {
                     task.getStatus(),
                     task.getStartDate(),
                     task.getEndDate(),
-                    MemberResponseDTO.Summary.from(task.getMember()),
+                    MemberResponseDTO.Detail.from(task.getMember()),
                     completed,
                     pending,
                     task.getTodos().stream()

@@ -39,4 +39,23 @@ public class MemberProjectServiceImpl implements MemberProjectService {
         project.addMemberProject(memberProject);
         member.addMemberProject(memberProject);
     }
+
+    @Override
+    @Transactional
+    public void changeMemberRole(Long projectId, MemberProjectRequestDTO.ChangeRole request) {
+        MemberProject memberProject = memberProjectRepository.getMemberProjectById(projectId, request.memberId())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND_IN_PROJECT));
+
+        memberProject.changeProjectRole(request.newRole());
+    }
+
+    @Override
+    @Transactional
+    public void removeMemberFromProject(Long projectId, Long memberId) {
+        MemberProject memberProject = memberProjectRepository.getMemberProjectById(projectId, memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND_IN_PROJECT));
+
+        memberProjectRepository.delete(memberProject);
+    }
+
 }

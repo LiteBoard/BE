@@ -30,6 +30,10 @@ public class MemberProject {
     @JoinColumn(name = "PROJECT_ID", nullable = false)
     private Project project;
 
+    public void changeProjectRole(ProjectRole newRole) {
+        this.projectRole = newRole;
+    }
+
     /** 연관 관계 편의 메서드 */
     public void setProject(Project project) {
         this.project = project;

@@ -27,4 +27,23 @@ public class MemberProjectController {
         return SuccessResponse.ok("프로젝트에 멤버 추가 성공했습니다.");
     }
 
+    @PatchMapping("/{projectId}/members/role")
+    @Operation(summary = "프로젝트 멤버 역할 변경", description = "지정한 멤버의 프로젝트 내 역할을 변경합니다.")
+    public SuccessResponse<String> changeMemberRole(
+            @PathVariable Long projectId,
+            @RequestBody @Valid MemberProjectRequestDTO.ChangeRole request
+    ) {
+        memberProjectService.changeMemberRole(projectId, request);
+        return SuccessResponse.ok("역할이 성공적으로 변경되었습니다.");
+    }
+
+    @DeleteMapping("/{projectId}/members/{memberId}")
+    @Operation(summary = "프로젝트 멤버 제거", description = "지정한 프로젝트에서 멤버를 제거합니다.")
+    public SuccessResponse<String> removeMember(
+            @PathVariable Long projectId,
+            @PathVariable Long memberId
+    ) {
+        memberProjectService.removeMemberFromProject(projectId, memberId);
+        return SuccessResponse.ok("멤버가 프로젝트에서 제거되었습니다.");
+    }
 }
