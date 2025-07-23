@@ -33,4 +33,19 @@ public class MemberResponseDTO {
             );
         }
     }
+
+    @Schema(description = "내 정보 응답 DTO")
+    public record MyInfo(
+            @Schema(description = "멤버 ID") Long id,
+            @Schema(description = "이름") String name,
+            @Schema(description = "알림 수신 여부") boolean notificationEnabled
+    ) {
+        public static MyInfo from(Member member) {
+            return new MyInfo(
+                    member.getId(),
+                    member.getName(),
+                    member.isNotificationEnabled()
+            );
+        }
+    }
 }

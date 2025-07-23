@@ -34,6 +34,11 @@ public class Member {
     private MemberRole role;
 
     @Builder.Default
+    @Column(nullable = false)
+    private boolean notificationEnabled = true;
+
+
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProject> memberProjects = new ArrayList<>();
 
@@ -67,6 +72,10 @@ public class Member {
         this.name = name;
         this.picture = picture;
         return this;
+    }
+
+    public void toggleNotificationEnabled() {
+        this.notificationEnabled = !this.notificationEnabled;
     }
 
     /** 연관 관계 편의 메서드 */
