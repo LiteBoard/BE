@@ -47,6 +47,7 @@ public class TodoServiceImpl implements TodoService {
                 .done(false)
                 .task(task)
                 .member(member)
+                .isRequired(false)
                 .build();
 
         task.getTodos().add(todo);

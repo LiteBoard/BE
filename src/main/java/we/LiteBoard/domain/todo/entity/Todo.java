@@ -24,6 +24,9 @@ public class Todo {
     @Column(nullable = false)
     private boolean done;
 
+    @Column(nullable = false)
+    private boolean isRequired;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TASK_ID", nullable = false)
     private Task task;

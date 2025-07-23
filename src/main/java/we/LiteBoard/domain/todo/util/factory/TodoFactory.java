@@ -10,6 +10,7 @@ public class TodoFactory {
         return Todo.builder()
                 .description(requestCardTodo.getDescription())
                 .done(false)
+                .isRequired(true)
                 .task(task)
                 .member(member)
                 .build();
