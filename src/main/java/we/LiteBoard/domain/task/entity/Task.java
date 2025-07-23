@@ -40,11 +40,11 @@ public class Task {
     private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    @JoinColumn(name = "CATEGORY_ID")
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID", nullable = false)
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @Builder.Default
