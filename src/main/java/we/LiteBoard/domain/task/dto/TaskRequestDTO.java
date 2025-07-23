@@ -2,9 +2,11 @@ package we.LiteBoard.domain.task.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import we.LiteBoard.domain.task.enumerate.Status;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Schema(description = "업무 관련 요청 DTO")
 public class TaskRequestDTO {
@@ -23,8 +25,8 @@ public class TaskRequestDTO {
             @Schema(description = "마감일", example = "2025-10-02")
             LocalDate endDate,
 
-            @Schema(description = "담당자 ID", example = "1")
-            Long memberId
+            @Schema(description = "담당자 ID 리스트", example = "[1, 2]")
+            @NotEmpty List<Long> memberIds
     ) {}
 
     @Schema(description = "업무 수정 요청 DTO")

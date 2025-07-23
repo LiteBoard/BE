@@ -3,9 +3,9 @@ package we.LiteBoard.domain.task.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import we.LiteBoard.domain.category.entity.Category;
-import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.requestCard.entity.RequestCard;
 import we.LiteBoard.domain.task.enumerate.Status;
+import we.LiteBoard.domain.taskMember.entity.TaskMember;
 import we.LiteBoard.domain.todo.entity.Todo;
 
 import java.time.LocalDate;
@@ -43,9 +43,9 @@ public class Task {
     @JoinColumn(name = "CATEGORY_ID")
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    @Builder.Default
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskMember> taskMembers = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)

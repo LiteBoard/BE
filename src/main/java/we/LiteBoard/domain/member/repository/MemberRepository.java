@@ -10,4 +10,5 @@ public interface MemberRepository {
     Member findByUsername(String username);
     void save(Member member);
     Member findByEmail(String email);
+    List<Member> findAllById(List<Long> memberIds);
 }

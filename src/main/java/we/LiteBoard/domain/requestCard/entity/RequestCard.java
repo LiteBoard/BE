@@ -30,7 +30,7 @@ public class RequestCard {
     private Member sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RECEIVER_ID", nullable = false)
+    @JoinColumn(name = "RECEIVER_ID")
     private Member receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)

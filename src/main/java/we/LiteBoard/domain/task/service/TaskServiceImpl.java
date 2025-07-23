@@ -14,6 +14,7 @@ import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.task.repository.TaskRepository;
+import we.LiteBoard.domain.taskMember.entity.TaskMember;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,7 +41,6 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request, Member currentMember) {
         Category category = categoryRepository.getById(categoryId);
-        Member member = memberRepository.getById(request.memberId());
 
         Task task = Task.builder()
                 .title(request.title())
@@ -49,13 +49,21 @@ public class TaskServiceImpl implements TaskService {
                 .startDate(request.startDate())
                 .endDate(request.endDate())
                 .category(category)
-                .member(member)
                 .build();
 
-        Task saved = taskRepository.save(task);
-        notificationService.notifyTaskAssigned(saved, currentMember);
+        List<Member> members = memberRepository.findAllById(request.memberIds());
+        for (Member member : members) {
+            TaskMember taskMember = TaskMember.builder()
+                    .task(task)
+                    .member(member)
+                    .build();
+            task.getTaskMembers().add(taskMember);
+        }
 
-        return TaskResponseDTO.Upsert.from(saved.getId());
+        taskRepository.save(task);
+        notificationService.notifyTaskAssigned(task, currentMember);
+
+        return TaskResponseDTO.Upsert.from(task.getId());
     }
 
     /**

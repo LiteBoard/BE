@@ -18,7 +18,7 @@ public interface NotificationService {
     void notifyTaskDueDateChanged(Task task);
     void notifyTodoAssigned(Todo todo, Member collaborator);
     void notifyTodoCompleted(Todo todo);
-    void notifyRequestCardCreated(RequestCard card);
+    void notifyRequestCardCreatedTo(Member member, Member sender, RequestCard requestCard);
     void notifyUnregisteredTodos(RequestCard card);
     void notifyRequestCardUpdated(RequestCard card);
     void notifyRequestCardDeleted(RequestCard card);

@@ -6,7 +6,7 @@ import we.LiteBoard.domain.member.enumerate.MemberRole;
 import we.LiteBoard.domain.memberProject.entity.MemberProject;
 import we.LiteBoard.domain.notification.entity.Notification;
 import we.LiteBoard.domain.requestCard.entity.RequestCard;
-import we.LiteBoard.domain.task.entity.Task;
+import we.LiteBoard.domain.taskMember.entity.TaskMember;
 import we.LiteBoard.domain.todo.entity.Todo;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class Member {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks = new ArrayList<>();
+    private List<TaskMember> taskMembers = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
