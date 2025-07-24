@@ -24,7 +24,7 @@ public class RequestCardTodo {
     @JoinColumn(name = "REQUEST_CARD_ID", nullable = false)
     private RequestCard requestCard;
 
-    public void setRequestCard(RequestCard requestCard) {
+    public void assignRequestCard(RequestCard requestCard) {
         this.requestCard = requestCard;
     }
 }

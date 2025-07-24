@@ -26,8 +26,12 @@ public class TaskMember {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public void setTask(Task task) {
+    public void assignTask(Task task) {
         this.task = task;
+    }
+
+    public void assignMember(Member member) {
+        this.member = member;
     }
 }
 

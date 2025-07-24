@@ -48,17 +48,17 @@ public class RequestCard {
 
     public void removeTodo(RequestCardTodo todo) {
         this.todos.remove(todo);
-        todo.setRequestCard(null);
+        todo.assignRequestCard(null);
     }
 
     /** 연관 관계 편의 메서드 */
     public void addTodo(RequestCardTodo todo) {
         todos.add(todo);
-        todo.setRequestCard(this);
+        todo.assignRequestCard(this);
     }
 
     public void addScheduledNotification(ScheduledNotification sn) {
         scheduledNotifications.add(sn);
-        sn.setRequestCard(this);
+        sn.assignRequestCard(this);
     }
 }

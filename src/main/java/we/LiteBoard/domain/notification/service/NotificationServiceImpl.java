@@ -69,10 +69,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void notifyTaskAssigned(Task task, Member senderMember) {
+    public void notifyTaskAssigned(Task task, List<Member> assignedMembers, Member senderMember) {
         NotificationMessage message = NotificationMessageFactory.createTaskAssigned(task);
-        for (TaskMember tm : task.getTaskMembers()) {
-            sender.send(tm.getMember(), senderMember, message);
+        for (Member member : assignedMembers) {
+            sender.send(member, senderMember, message);
         }
     }
 

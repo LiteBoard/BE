@@ -23,9 +23,12 @@ public class TaskRequestDTO {
             LocalDate startDate,
 
             @Schema(description = "마감일", example = "2025-10-02")
-            LocalDate endDate,
+            LocalDate endDate
+    ) {}
 
-            @Schema(description = "담당자 ID 리스트", example = "[1, 2]")
+    @Schema(description = "업무 담당자 배정 요청 DTO")
+    public record AssignMembers(
+            @Schema(description = "배정할 멤버 ID 목록", example = "[1, 2]")
             @NotEmpty List<Long> memberIds
     ) {}
 

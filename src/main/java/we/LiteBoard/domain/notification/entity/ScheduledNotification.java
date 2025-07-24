@@ -29,11 +29,11 @@ public class ScheduledNotification {
     @Column(nullable = false)
     private boolean notified;
 
-    public void setNotified(boolean notified) {
+    public void assignNotified(boolean notified) {
         this.notified = notified;
     }
 
-    public void setRequestCard(RequestCard requestCard) {
+    public void assignRequestCard(RequestCard requestCard) {
         this.requestCard = requestCard;
     }
 }

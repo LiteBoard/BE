@@ -12,7 +12,7 @@ import java.util.List;
 public interface NotificationService {
     SseEmitter subscribe(Long memberId);
     List<NotificationResponseDTO.Detail> getMyNotifications(Long memberId);
-    void notifyTaskAssigned(Task task, Member sender);
+    void notifyTaskAssigned(Task task, List<Member> assignedMembers, Member sender);
     void notifyTaskCompleted(Task task);
     void notifyTaskDelayed(Task task);
     void notifyTaskDueDateChanged(Task task);

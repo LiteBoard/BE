@@ -89,6 +89,6 @@ public class Task {
 
     public void addTaskMember(TaskMember tm) {
         taskMembers.add(tm);
-        tm.setTask(this);
+        tm.assignTask(this);
     }
 }

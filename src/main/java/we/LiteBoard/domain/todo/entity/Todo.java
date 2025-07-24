@@ -43,9 +43,4 @@ public class Todo {
     public void toggle() {
         this.done = !this.done;
     }
-
-    /** 연관 관계 편의 메서드 */
-    public void setTask(Task task) {
-        this.task = task;
-    }
 }

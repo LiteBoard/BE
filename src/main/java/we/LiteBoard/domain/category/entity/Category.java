@@ -36,7 +36,7 @@ public class Category {
     }
 
     /** 연관 관계 편의 메서드 */
-    public void setProject(Project project) {
+    public void assignProject(Project project) {
         this.project = project;
     }
 }

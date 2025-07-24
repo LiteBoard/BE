@@ -77,6 +77,11 @@ public class Member {
     /** 연관 관계 편의 메서드 */
     public void addMemberProject(MemberProject memberProject) {
         this.memberProjects.add(memberProject);
-        memberProject.setMember(this);
+        memberProject.assignMember(this);
+    }
+
+    public void addTaskMember(TaskMember tm) {
+        taskMembers.add(tm);
+        tm.assignMember(this);
     }
 }

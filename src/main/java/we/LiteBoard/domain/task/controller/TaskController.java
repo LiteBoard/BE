@@ -26,11 +26,32 @@ public class TaskController {
     @Operation(summary = "업무 생성", description = "카테고리에 업무를 생성합니다.")
     public SuccessResponse<TaskResponseDTO.Upsert> create(
             @PathVariable Long categoryId,
-            @RequestBody @Valid TaskRequestDTO.Create request,
+            @RequestBody @Valid TaskRequestDTO.Create request
+    ) {
+        return SuccessResponse.ok(taskService.create(categoryId, request));
+    }
+
+    @PostMapping("/tasks/{taskId}/members")
+    @Operation(summary = "업무 담당자 배정", description = "해당 업무에 담당자를 배정합니다.")
+    public SuccessResponse<String> assignMembers(
+            @PathVariable Long taskId,
+            @RequestBody @Valid TaskRequestDTO.AssignMembers request,
             @CurrentMember Member member
     ) {
-        return SuccessResponse.ok(taskService.create(categoryId, request, member));
+        taskService.assignMembers(taskId, request.memberIds(), member);
+        return SuccessResponse.ok("담당자 배정 완료");
     }
+
+    @DeleteMapping("/tasks/{taskId}/members/{memberId}")
+    @Operation(summary = "업무 담당자 제거", description = "해당 업무에서 지정한 담당자를 제거합니다.")
+    public SuccessResponse<String> removeMemberFromTask(
+            @PathVariable Long taskId,
+            @PathVariable Long memberId
+    ) {
+        taskService.removeMember(taskId, memberId);
+        return SuccessResponse.ok("담당자 제거 완료");
+    }
+
 
     @GetMapping("/categories/{categoryId}/tasks")
     @Operation(summary = "업무 목록 조회", description = "해당 카테고리에 속한 업무 목록을 반환합니다.")
