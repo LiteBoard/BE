@@ -25,5 +25,9 @@ public class TaskMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 }
 

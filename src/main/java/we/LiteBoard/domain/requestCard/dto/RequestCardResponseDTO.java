@@ -26,7 +26,6 @@ public class RequestCardResponseDTO {
             @Schema(description = "업무 요청 ID") Long id,
             @Schema(description = "내용") String content,
             @Schema(description = "요청자") MemberResponseDTO.Detail sender,
-            @Schema(description = "수신자") MemberResponseDTO.Detail receiver,
             @Schema(description = "요청 Todo") List<RequestCardTodoResponseDTO.Detail> todos
     ) {
         public static RequestCardResponseDTO.Detail from(RequestCard requestCard) {
@@ -34,7 +33,6 @@ public class RequestCardResponseDTO {
                     requestCard.getId(),
                     requestCard.getContent(),
                     MemberResponseDTO.Detail.from(requestCard.getSender()),
-                    MemberResponseDTO.Detail.from(requestCard.getReceiver()),
                     requestCard.getTodos().stream()
                             .map(RequestCardTodoResponseDTO.Detail::from)
                             .toList()

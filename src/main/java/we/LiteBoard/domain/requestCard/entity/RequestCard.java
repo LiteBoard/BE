@@ -3,6 +3,7 @@ package we.LiteBoard.domain.requestCard.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.notification.entity.ScheduledNotification;
 import we.LiteBoard.domain.requestCardTodo.entity.RequestCardTodo;
 import we.LiteBoard.domain.task.entity.Task;
 
@@ -30,16 +31,16 @@ public class RequestCard {
     private Member sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RECEIVER_ID")
-    private Member receiver;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TASK_ID", nullable = false)
     private Task task;
 
     @Builder.Default
     @OneToMany(mappedBy = "requestCard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestCardTodo> todos = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "requestCard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScheduledNotification> scheduledNotifications = new ArrayList<>();
 
     public void updateContent(String content) {
         this.content = content;
@@ -54,5 +55,10 @@ public class RequestCard {
     public void addTodo(RequestCardTodo todo) {
         todos.add(todo);
         todo.setRequestCard(this);
+    }
+
+    public void addScheduledNotification(ScheduledNotification sn) {
+        scheduledNotifications.add(sn);
+        sn.setRequestCard(this);
     }
 }

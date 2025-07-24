@@ -60,13 +60,15 @@ public class RequestCardServiceImpl implements RequestCardService {
         }
 
         // 미등록 TODOs 검증 알림용 데이터 생성
-        scheduledNotificationRepository.save(
+        ScheduledNotification sn = scheduledNotificationRepository.save(
                 ScheduledNotification.builder()
                         .requestCard(requestCard)
                         .notifyTime(LocalDateTime.now().plusHours(3))
                         .notified(false)
                         .build()
         );
+
+        requestCard.addScheduledNotification(sn);
         return RequestCardResponseDTO.Upsert.from(requestCard);
     }
 
@@ -130,6 +132,6 @@ public class RequestCardServiceImpl implements RequestCardService {
     public void deleteById(Long requestCardId) {
         RequestCard requestCard = requestCardRepository.getById(requestCardId);
         notificationService.notifyRequestCardDeleted(requestCard);
-        requestCardRepository.delete(requestCard);
+        requestCardRepository.delete(requestCard.getId());
     }
 }

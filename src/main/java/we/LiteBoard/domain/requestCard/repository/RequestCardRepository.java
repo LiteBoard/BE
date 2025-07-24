@@ -8,5 +8,5 @@ public interface RequestCardRepository {
     void save(RequestCard requestCard);
     List<RequestCard> findAllByTaskId(Long taskId);
     RequestCard getById(Long requestCardId);
-    void delete(RequestCard requestCard);
+    void delete(Long requestCardId);
 }

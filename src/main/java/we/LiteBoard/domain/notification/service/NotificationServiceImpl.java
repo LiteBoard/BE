@@ -155,6 +155,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void notifyUnregisteredTodos(RequestCard card) {
         NotificationMessage message = NotificationMessageFactory.createUnregisteredTodos(card);
-        sender.send(card.getReceiver(), card.getSender(), message);
+        List<Member> receivers = card.getTask().getTaskMembers().stream()
+                .map(TaskMember::getMember)
+                .toList();
+
+        for (Member receiver : receivers) {
+            sender.send(receiver, card.getSender(), message);
+        }
     }
 }

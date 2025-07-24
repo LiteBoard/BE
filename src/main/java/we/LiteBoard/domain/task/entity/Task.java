@@ -86,4 +86,9 @@ public class Task {
 
         return this.status != previous;
     }
+
+    public void addTaskMember(TaskMember tm) {
+        taskMembers.add(tm);
+        tm.setTask(this);
+    }
 }

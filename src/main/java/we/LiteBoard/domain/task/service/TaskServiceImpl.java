@@ -57,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
                     .task(task)
                     .member(member)
                     .build();
-            task.getTaskMembers().add(taskMember);
+            task.addTaskMember(taskMember);
         }
 
         taskRepository.save(task);
