@@ -27,6 +27,7 @@ public class Member {
 
     private String username;
     private String name;
+    private String nickname;
     private String email;
     private String picture;
 
@@ -68,6 +69,10 @@ public class Member {
         this.name = name;
         this.picture = picture;
         return this;
+    }
+
+    public void updateNickName(String nickname) {
+        this.nickname = nickname;
     }
 
     public void toggleNotificationEnabled() {
