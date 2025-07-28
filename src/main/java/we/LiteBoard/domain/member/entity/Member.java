@@ -32,7 +32,7 @@ public class Member {
     private String picture;
 
     @Enumerated(EnumType.STRING)
-    private MemberRole role;
+    private MemberRole role; // 과금 등급
 
     @Builder.Default
     @Column(nullable = false)

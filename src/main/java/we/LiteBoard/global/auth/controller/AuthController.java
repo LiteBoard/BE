@@ -32,6 +32,7 @@ public class AuthController {
         }
 
         // Refresh Token이 Redis에 존재하는지 확인
+        Long id = jwtUtil.getId(refreshToken);
         String email = jwtUtil.getEmail(refreshToken);
         String storedRefreshToken = tokenCache.get(email);
 
@@ -41,7 +42,7 @@ public class AuthController {
 
         // Access Token 재발급
         String role = jwtUtil.getRole(refreshToken);
-        String newAccessToken = jwtUtil.createAccessToken(email, role);
+        String newAccessToken = jwtUtil.createAccessToken(id, email, role);
 
         // 헤더에 토큰 담아서 응답
         HttpHeaders headers = new HttpHeaders();

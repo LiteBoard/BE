@@ -35,6 +35,7 @@ public enum ErrorCode {
     INVALID_PARAMETER("COMMON422", "잘못된 파라미터입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     PARAMETER_VALIDATION_ERROR("COMMON422", "파라미터 검증 에러입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     PARAMETER_GRAMMAR_ERROR("COMMON422", "파라미터 문법 에러입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
+    AUTH_PARAMETER_VALIDATION_ERROR("COMMON422", "권한 검사를 하려 했지만 projectId가 파라미터에 없습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
 
     // Token
     TOKEN_INVALID("TOKEN401", "유효하지 않은 Token 입니다.", HttpStatus.UNAUTHORIZED),
@@ -55,7 +56,7 @@ public enum ErrorCode {
     USER_SAME_PASSWORD("USER400", "동일한 비밀번호로 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
     PASSWORDS_NOT_MATCH("PASSWORD401", "입력한 두 개의 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     USER_NO_PERMISSION("USER403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
-    USER_FORBIDDEN("USER403", "유저의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
+    USER_FORBIDDEN("USER403", "사용자의 권한이 부족합니다.", HttpStatus.FORBIDDEN),
 
     // Project (프로젝트)
     PROJECT_NOT_FOUND("PROJECT404", "프로젝트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
