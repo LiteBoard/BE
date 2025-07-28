@@ -6,7 +6,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import we.LiteBoard.domain.memberProject.dto.MemberProjectRequestDTO;
+import we.LiteBoard.domain.memberProject.enumerate.ProjectRole;
 import we.LiteBoard.domain.memberProject.service.MemberProjectService;
+import we.LiteBoard.global.common.annotation.ProjectRoleRequired;
 import we.LiteBoard.global.response.SuccessResponse;
 
 @RestController
@@ -18,6 +20,7 @@ public class MemberProjectController {
     private final MemberProjectService memberProjectService;
 
     @PostMapping("/{projectId}/members")
+    @ProjectRoleRequired(ProjectRole.ADMIN)
     @Operation(summary = "프로젝트에 멤버 추가", description = "지정한 프로젝트에 멤버를 추가합니다.")
     public SuccessResponse<String> addMember(
             @PathVariable Long projectId,
@@ -28,6 +31,7 @@ public class MemberProjectController {
     }
 
     @PatchMapping("/{projectId}/members/role")
+    @ProjectRoleRequired(ProjectRole.ADMIN)
     @Operation(summary = "프로젝트 멤버 역할 변경", description = "지정한 멤버의 프로젝트 내 역할을 변경합니다.")
     public SuccessResponse<String> changeMemberRole(
             @PathVariable Long projectId,
@@ -38,6 +42,7 @@ public class MemberProjectController {
     }
 
     @DeleteMapping("/{projectId}/members/{memberId}")
+    @ProjectRoleRequired(ProjectRole.ADMIN)
     @Operation(summary = "프로젝트 멤버 제거", description = "지정한 프로젝트에서 멤버를 제거합니다.")
     public SuccessResponse<String> removeMember(
             @PathVariable Long projectId,

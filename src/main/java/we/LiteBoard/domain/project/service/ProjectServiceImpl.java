@@ -52,4 +52,15 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.getById(projectId);
         return ProjectResponseDTO.Detail.from(project);
     }
+
+    /**
+     * 프로젝트 삭제
+     * @param projectId 삭제할 프로젝트 ID
+     */
+    @Override
+    @Transactional
+    public void delete(Long projectId) {
+        projectRepository.getById(projectId);
+        projectRepository.deleteById(projectId);
+    }
 }

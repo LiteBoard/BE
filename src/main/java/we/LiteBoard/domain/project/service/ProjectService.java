@@ -7,4 +7,5 @@ import we.LiteBoard.domain.project.dto.ProjectResponseDTO;
 public interface ProjectService {
     Long create(Member currentMember, ProjectRequestDTO.Create request);
     ProjectResponseDTO.Detail getById(Long projectId);
+    void delete(Long projectId);
 }
