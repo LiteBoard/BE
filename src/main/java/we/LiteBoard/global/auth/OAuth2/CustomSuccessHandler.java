@@ -1,6 +1,5 @@
 package we.LiteBoard.global.auth.OAuth2;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,7 +42,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         tokenCache.save("auth:refresh:" + email, refreshToken, Duration.ofDays(3));
 
         response.addCookie(createCookie("Refresh-Token", refreshToken));
-        response.sendRedirect("http://localhost:3000/");
+        response.sendRedirect("http://localhost:3000/auth/callback/google");
     }
 
     private Cookie createCookie(String key, String value) {
