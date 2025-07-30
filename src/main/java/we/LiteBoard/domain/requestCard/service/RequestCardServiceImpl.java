@@ -14,6 +14,7 @@ import we.LiteBoard.domain.requestCard.repository.RequestCardRepository;
 import we.LiteBoard.domain.requestCardTodo.entity.RequestCardTodo;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.repository.TaskRepository;
+import we.LiteBoard.domain.taskMember.entity.TaskMember;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,12 +40,10 @@ public class RequestCardServiceImpl implements RequestCardService {
     @Transactional
     public RequestCardResponseDTO.Upsert create(Member sender, Long taskId, RequestCardRequestDTO.Create request) {
         Task task = taskRepository.getById(taskId);
-        Member receiver = task.getMember();
 
         RequestCard requestCard = RequestCard.builder()
                 .content(request.content())
                 .sender(sender)
-                .receiver(receiver)
                 .task(task)
                 .build();
 
@@ -56,16 +55,20 @@ public class RequestCardServiceImpl implements RequestCardService {
         }
 
         requestCardRepository.save(requestCard);
-        notificationService.notifyRequestCardCreated(requestCard);
+        for (TaskMember tm : task.getTaskMembers()) {
+            notificationService.notifyRequestCardCreatedTo(tm.getMember(), sender, requestCard);
+        }
 
         // 미등록 TODOs 검증 알림용 데이터 생성
-        scheduledNotificationRepository.save(
+        ScheduledNotification sn = scheduledNotificationRepository.save(
                 ScheduledNotification.builder()
                         .requestCard(requestCard)
                         .notifyTime(LocalDateTime.now().plusHours(3))
                         .notified(false)
                         .build()
         );
+
+        requestCard.addScheduledNotification(sn);
         return RequestCardResponseDTO.Upsert.from(requestCard);
     }
 
@@ -129,6 +132,6 @@ public class RequestCardServiceImpl implements RequestCardService {
     public void deleteById(Long requestCardId) {
         RequestCard requestCard = requestCardRepository.getById(requestCardId);
         notificationService.notifyRequestCardDeleted(requestCard);
-        requestCardRepository.delete(requestCard);
+        requestCardRepository.delete(requestCard.getId());
     }
 }

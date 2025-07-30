@@ -20,6 +20,7 @@ public class ScheduledNotification {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REQUEST_CARD_ID", nullable = false)
     private RequestCard requestCard;
 
     @Column(name = "NOTIFY_TIME")
@@ -28,7 +29,11 @@ public class ScheduledNotification {
     @Column(nullable = false)
     private boolean notified;
 
-    public void setNotified(boolean notified) {
+    public void assignNotified(boolean notified) {
         this.notified = notified;
+    }
+
+    public void assignRequestCard(RequestCard requestCard) {
+        this.requestCard = requestCard;
     }
 }

@@ -35,7 +35,7 @@ public class TaskResponseDTO {
             @Schema(description = "상태") Status status,
             @Schema(description = "시작일") @DateFormat LocalDate startDate,
             @Schema(description = "마감일") @DateFormat LocalDate endDate,
-            @Schema(description = "담당자 정보") MemberResponseDTO.Summary member,
+            @Schema(description = "담당자 정보") List<MemberResponseDTO.Detail> members,
             @Schema(description = "완료된 Todo 수") int completedTodoCount,
             @Schema(description = "미완료 Todo 수") int pendingTodoCount,
             @Schema(description = "TODO 목록") List<TodoResponseDTO.Detail> todos,
@@ -45,6 +45,10 @@ public class TaskResponseDTO {
             int completed = (int) task.getTodos().stream().filter(Todo::isDone).count();
             int pending = task.getTodos().size() - completed;
 
+            List<MemberResponseDTO.Detail> memberDetails = task.getTaskMembers().stream()
+                    .map(tm -> MemberResponseDTO.Detail.from(tm.getMember()))
+                    .toList();
+
             return new TaskResponseDTO.Detail(
                     task.getId(),
                     task.getTitle(),
@@ -52,7 +56,7 @@ public class TaskResponseDTO {
                     task.getStatus(),
                     task.getStartDate(),
                     task.getEndDate(),
-                    MemberResponseDTO.Summary.from(task.getMember()),
+                    memberDetails,
                     completed,
                     pending,
                     task.getTodos().stream()
@@ -117,6 +121,7 @@ public class TaskResponseDTO {
             @Schema(description = "Task ID") Long id,
             @Schema(description = "제목") String title,
             @Schema(description = "상태") String status,
+            @Schema(description = "담당자 정보") List<MemberResponseDTO.Detail> members,
             @Schema(description = "시작일") @DateFormat LocalDate startDate,
             @Schema(description = "마감일") @DateFormat LocalDate endDate,
             @Schema(description = "완료된 Todo 수") int completedTodoCount,
@@ -126,10 +131,15 @@ public class TaskResponseDTO {
             int completed = (int) task.getTodos().stream().filter(Todo::isDone).count();
             int pending = task.getTodos().size() - completed;
 
+            List<MemberResponseDTO.Detail> memberDetails = task.getTaskMembers().stream()
+                    .map(tm -> MemberResponseDTO.Detail.from(tm.getMember()))
+                    .toList();
+
             return new TaskResponseDTO.Summary(
                     task.getId(),
                     task.getTitle(),
                     task.getStatus().name(),
+                    memberDetails,
                     task.getStartDate(),
                     task.getEndDate(),
                     completed,

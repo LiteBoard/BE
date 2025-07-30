@@ -1,4 +1,4 @@
-package we.LiteBoard.domain.todo.entity;
+package we.LiteBoard.domain.taskMember.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,41 +6,32 @@ import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.task.entity.Task;
 
 @Entity
-@Table(name = "TODO")
+@Table(name = "TASK_MEMBER")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Todo {
+public class TaskMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TODO_ID")
+    @Column(name = "TASK_MEMBER_ID")
     private Long id;
 
-    @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false)
-    private boolean done;
-
-    @Column(nullable = false)
-    private boolean isRequired;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TASK_ID", nullable = false)
+    @JoinColumn(name = "TASK_ID")
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public void update(String description, Member member) {
-        this.description = description;
-        this.member = member;
+    public void assignTask(Task task) {
+        this.task = task;
     }
 
-    public void toggle() {
-        this.done = !this.done;
+    public void assignMember(Member member) {
+        this.member = member;
     }
 }
+

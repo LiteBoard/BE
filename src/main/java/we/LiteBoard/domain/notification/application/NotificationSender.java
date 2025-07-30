@@ -20,6 +20,10 @@ public class NotificationSender {
     private final SseEmitterRepository sseEmitterRepository;
 
     public void send(Member receiver, Member sender, NotificationMessage message) {
+        if (!receiver.isNotificationEnabled()) {
+            return;
+        }
+
         Notification notification = Notification.builder()
                 .title(message.title())
                 .content(message.content())

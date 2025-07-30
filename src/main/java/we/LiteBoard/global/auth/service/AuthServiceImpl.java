@@ -22,6 +22,7 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_INVALID);
         }
 
+        Long id = jwtUtil.getId(refreshToken);
         String email = jwtUtil.getEmail(refreshToken);
 
         // Redis에 저장된 Refresh Token과 비교
@@ -31,6 +32,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String role = jwtUtil.getRole(refreshToken);
-        return jwtUtil.createAccessToken(email, role);
+        return jwtUtil.createAccessToken(id, email, role);
     }
 }

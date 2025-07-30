@@ -23,14 +23,16 @@ public class TodoResponseDTO {
             @Schema(description = "TODO ID") Long id,
             @Schema(description = "담당자") MemberResponseDTO.Detail member,
             @Schema(description = "내용") String description,
-            @Schema(description = "완료 여부") Boolean done
+            @Schema(description = "완료 여부") Boolean done,
+            @Schema(description = "요청됨 여부") Boolean isRequired
     ) {
         public static TodoResponseDTO.Detail from(Todo todo) {
             return new TodoResponseDTO.Detail(
                     todo.getId(),
                     todo.getMember() != null ? MemberResponseDTO.Detail.from(todo.getMember()) : null,
                     todo.getDescription(),
-                    todo.isDone()
+                    todo.isDone(),
+                    todo.isRequired()
             );
         }
     }

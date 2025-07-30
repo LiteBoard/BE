@@ -14,10 +14,16 @@ import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
 import we.LiteBoard.domain.task.enumerate.Status;
 import we.LiteBoard.domain.task.repository.TaskRepository;
+import we.LiteBoard.domain.taskMember.entity.TaskMember;
+import we.LiteBoard.domain.taskMember.repository.TaskMemberRepository;
+import we.LiteBoard.global.exception.CustomException;
+import we.LiteBoard.global.exception.ErrorCode;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +35,7 @@ public class TaskServiceImpl implements TaskService {
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
+    private final TaskMemberRepository taskMemberRepository;
 
     /**
      * 업무 생성
@@ -38,9 +45,8 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request, Member currentMember) {
+    public TaskResponseDTO.Upsert create(Long categoryId, TaskRequestDTO.Create request) {
         Category category = categoryRepository.getById(categoryId);
-        Member member = memberRepository.getById(request.memberId());
 
         Task task = Task.builder()
                 .title(request.title())
@@ -49,13 +55,70 @@ public class TaskServiceImpl implements TaskService {
                 .startDate(request.startDate())
                 .endDate(request.endDate())
                 .category(category)
-                .member(member)
                 .build();
 
-        Task saved = taskRepository.save(task);
-        notificationService.notifyTaskAssigned(saved, currentMember);
+        taskRepository.save(task);
+        return TaskResponseDTO.Upsert.from(task.getId());
+    }
 
-        return TaskResponseDTO.Upsert.from(saved.getId());
+    /**
+     * 업무에 담당자 배정
+     * @param taskId 배정할 업무
+     * @param memberIds 배정할 담당자 ID 리스트
+     * @param currentMember 배정하는 자
+     */
+    @Override
+    @Transactional
+    public void assignMembers(Long taskId, List<Long> memberIds, Member currentMember) {
+        Task task = taskRepository.getById(taskId);
+        List<Member> members = memberRepository.findAllById(memberIds);
+
+        // 이미 배정된 담당자 정보
+        Set<Long> alreadyAssignedIds = task.getTaskMembers().stream()
+                .map(tm -> tm.getMember().getId())
+                .collect(Collectors.toSet());
+
+        List<Member> newlyAssignedMembers = new ArrayList<>();
+
+        for (Member member : members) {
+            if (alreadyAssignedIds.contains(member.getId())) {
+                continue;
+            }
+
+            TaskMember taskMember = TaskMember.builder()
+                    .task(task)
+                    .member(member)
+                    .build();
+            task.addTaskMember(taskMember);
+            member.addTaskMember(taskMember);
+            newlyAssignedMembers.add(member);
+        }
+
+        if (!newlyAssignedMembers.isEmpty()) {
+            notificationService.notifyTaskAssigned(task, newlyAssignedMembers, currentMember);
+        }
+    }
+
+    /**
+     * 업무 담당자 제거
+     * @param taskId 해당 업무
+     * @param memberId 제거할 담당자 ID
+     */
+    @Override
+    @Transactional
+    public void removeMember(Long taskId, Long memberId) {
+        Task task = taskRepository.getById(taskId);
+
+        TaskMember toRemove = task.getTaskMembers().stream()
+                .filter(tm -> tm.getMember().getId().equals(memberId))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND_IN_PROJECT));
+
+        // 양방향 관계 제거
+        task.getTaskMembers().remove(toRemove);
+        toRemove.getMember().getTaskMembers().remove(toRemove);
+
+        taskMemberRepository.delete(toRemove);
     }
 
     /**

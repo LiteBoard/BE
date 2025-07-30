@@ -1,6 +1,5 @@
 package we.LiteBoard.global.auth.OAuth2;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,11 +24,12 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final TokenCache tokenCache;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
         //OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
+        Long id = customUserDetails.getUserDTO().getId();
         String email = customUserDetails.getEmail();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -37,12 +37,12 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String refreshToken = jwtUtil.createRefreshToken(email, role);
+        String refreshToken = jwtUtil.createRefreshToken(id, email, role);
 
         tokenCache.save("auth:refresh:" + email, refreshToken, Duration.ofDays(3));
 
         response.addCookie(createCookie("Refresh-Token", refreshToken));
-        response.sendRedirect("http://localhost:3000/");
+        response.sendRedirect("http://localhost:3000/auth/callback/google");
     }
 
     private Cookie createCookie(String key, String value) {

@@ -35,7 +35,7 @@ public class PendingNotificationSender {
                     notificationService.notifyUnregisteredTodos(card);
                 }
 
-                s.setNotified(true);
+                s.assignNotified(true);
 
             } catch (Exception e) {
                 log.error("Failed to notify unregistered todos. RequestCardId={}, ScheduledNotificationId={}",

@@ -28,7 +28,7 @@ public class TodoServiceImpl implements TodoService {
 
     /**
      * 투두 생성
-     * @param taskId TODO가 속할 상위 업무 ID
+     * @param taskId TODOs가 속할 상위 업무 ID
      * @param request 생성할 내용
      * @return 생성된
      */
@@ -47,6 +47,7 @@ public class TodoServiceImpl implements TodoService {
                 .done(false)
                 .task(task)
                 .member(member)
+                .isRequired(false)
                 .build();
 
         task.getTodos().add(todo);

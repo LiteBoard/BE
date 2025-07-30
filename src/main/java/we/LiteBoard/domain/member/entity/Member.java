@@ -6,7 +6,7 @@ import we.LiteBoard.domain.member.enumerate.MemberRole;
 import we.LiteBoard.domain.memberProject.entity.MemberProject;
 import we.LiteBoard.domain.notification.entity.Notification;
 import we.LiteBoard.domain.requestCard.entity.RequestCard;
-import we.LiteBoard.domain.task.entity.Task;
+import we.LiteBoard.domain.taskMember.entity.TaskMember;
 import we.LiteBoard.domain.todo.entity.Todo;
 
 import java.util.ArrayList;
@@ -27,11 +27,17 @@ public class Member {
 
     private String username;
     private String name;
+    private String nickname;
     private String email;
     private String picture;
 
     @Enumerated(EnumType.STRING)
-    private MemberRole role;
+    private MemberRole role; // 과금 등급
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean notificationEnabled = true;
+
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -39,15 +45,11 @@ public class Member {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks = new ArrayList<>();
+    private List<TaskMember> taskMembers = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Todo> todos = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RequestCard> receivedRequests = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -69,9 +71,22 @@ public class Member {
         return this;
     }
 
+    public void updateNickName(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void toggleNotificationEnabled() {
+        this.notificationEnabled = !this.notificationEnabled;
+    }
+
     /** 연관 관계 편의 메서드 */
     public void addMemberProject(MemberProject memberProject) {
         this.memberProjects.add(memberProject);
-        memberProject.setMember(this);
+        memberProject.assignMember(this);
+    }
+
+    public void addTaskMember(TaskMember tm) {
+        taskMembers.add(tm);
+        tm.assignMember(this);
     }
 }

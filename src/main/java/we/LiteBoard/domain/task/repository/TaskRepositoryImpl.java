@@ -12,6 +12,7 @@ import we.LiteBoard.global.exception.ErrorCode;
 import java.util.List;
 
 import static we.LiteBoard.domain.task.entity.QTask.task;
+import static we.LiteBoard.domain.taskMember.entity.QTaskMember.taskMember;
 
 @Repository
 @RequiredArgsConstructor
@@ -48,9 +49,11 @@ public class TaskRepositoryImpl implements TaskRepository {
     @Override
     public List<Task> findByMemberAndStatuses(Member member, List<Status> statuses) {
         return queryFactory
-                .selectFrom(task)
+                .select(task)
+                .from(taskMember)
+                .join(taskMember.task, task)
                 .where(
-                        task.member.eq(member),
+                        taskMember.member.eq(member),
                         task.status.in(statuses)
                 )
                 .orderBy(task.endDate.asc().nullsLast())

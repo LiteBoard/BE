@@ -39,4 +39,9 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Member findByEmail(String email) {
         return memberJpaRepository.findByEmail(email);
     }
+
+    @Override
+    public List<Member> findAllById(List<Long> memberIds) {
+        return memberJpaRepository.findAllById(memberIds);
+    }
 }

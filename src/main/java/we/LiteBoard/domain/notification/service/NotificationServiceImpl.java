@@ -14,6 +14,7 @@ import we.LiteBoard.domain.notification.repository.NotificationRepository;
 import we.LiteBoard.domain.notification.sse.SseEmitterRepository;
 import we.LiteBoard.domain.requestCard.entity.RequestCard;
 import we.LiteBoard.domain.task.entity.Task;
+import we.LiteBoard.domain.taskMember.entity.TaskMember;
 import we.LiteBoard.domain.todo.entity.Todo;
 
 import java.io.IOException;
@@ -68,30 +69,38 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void notifyTaskAssigned(Task task, Member senderMember) {
+    public void notifyTaskAssigned(Task task, List<Member> assignedMembers, Member senderMember) {
         NotificationMessage message = NotificationMessageFactory.createTaskAssigned(task);
-        sender.send(task.getMember(), senderMember, message);
+        for (Member member : assignedMembers) {
+            sender.send(member, senderMember, message);
+        }
     }
 
     @Override
     @Transactional
     public void notifyTaskCompleted(Task task) {
         NotificationMessage message = NotificationMessageFactory.createTaskCompleted(task);
-        sender.send(task.getMember(), null, message);
+        for (TaskMember tm : task.getTaskMembers()) {
+            sender.send(tm.getMember(), null, message);
+        }
     }
 
     @Override
     @Transactional
     public void notifyTaskDelayed(Task task) {
         NotificationMessage message = NotificationMessageFactory.createTaskDelayed(task);
-        sender.send(task.getMember(), null, message);
+        for (TaskMember tm : task.getTaskMembers()) {
+            sender.send(tm.getMember(), null, message);
+        }
     }
 
     @Override
     @Transactional
     public void notifyTaskDueDateChanged(Task task) {
         NotificationMessage message = NotificationMessageFactory.createTaskDueDateChanged(task);
-        sender.send(task.getMember(), null, message);
+        for (TaskMember tm : task.getTaskMembers()) {
+            sender.send(tm.getMember(), null, message);
+        }
     }
 
     @Override
@@ -119,29 +128,39 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void notifyRequestCardCreated(RequestCard card) {
-        NotificationMessage message = NotificationMessageFactory.createRequestCardCreated(card);
-        sender.send(card.getTask().getMember(), card.getSender(), message);
+    public void notifyRequestCardCreatedTo(Member receiver, Member senderMember, RequestCard requestCard) {
+        NotificationMessage message = NotificationMessageFactory.createRequestCardCreated(requestCard);
+        sender.send(receiver, senderMember, message);
     }
 
     @Override
     @Transactional
     public void notifyRequestCardUpdated(RequestCard card) {
         NotificationMessage message = NotificationMessageFactory.createRequestCardUpdated(card);
-        sender.send(card.getTask().getMember(), card.getSender(), message);
+        for (TaskMember tm : card.getTask().getTaskMembers()) {
+            sender.send(tm.getMember(), card.getSender(), message);
+        }
     }
 
     @Override
     @Transactional
     public void notifyRequestCardDeleted(RequestCard card) {
         NotificationMessage message = NotificationMessageFactory.createRequestCardDeleted(card);
-        sender.send(card.getTask().getMember(), card.getSender(), message);
+        for (TaskMember tm : card.getTask().getTaskMembers()) {
+            sender.send(tm.getMember(), card.getSender(), message);
+        }
     }
 
     @Override
     @Transactional
     public void notifyUnregisteredTodos(RequestCard card) {
         NotificationMessage message = NotificationMessageFactory.createUnregisteredTodos(card);
-        sender.send(card.getReceiver(), card.getSender(), message);
+        List<Member> receivers = card.getTask().getTaskMembers().stream()
+                .map(TaskMember::getMember)
+                .toList();
+
+        for (Member receiver : receivers) {
+            sender.send(receiver, card.getSender(), message);
+        }
     }
 }

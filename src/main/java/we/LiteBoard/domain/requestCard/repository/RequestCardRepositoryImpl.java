@@ -28,12 +28,10 @@ public class RequestCardRepositoryImpl implements RequestCardRepository {
     @Override
     public List<RequestCard> findAllByTaskId(Long taskId) {
         QMember sender = QMember.member;
-        QMember receiver = new QMember("receiver");
 
         return queryFactory
                 .selectFrom(requestCard)
                 .leftJoin(requestCard.sender, sender).fetchJoin()
-                .leftJoin(requestCard.receiver, receiver).fetchJoin()
                 .leftJoin(requestCard.todos, requestCardTodo).fetchJoin()
                 .where(requestCard.task.id.eq(taskId))
                 .distinct()
@@ -47,7 +45,7 @@ public class RequestCardRepositoryImpl implements RequestCardRepository {
     }
 
     @Override
-    public void delete(RequestCard requestCard) {
-        requestCardJpaRepository.delete(requestCard);
+    public void delete(Long requestCardId) {
+        requestCardJpaRepository.deleteById(requestCardId);
     }
 }
