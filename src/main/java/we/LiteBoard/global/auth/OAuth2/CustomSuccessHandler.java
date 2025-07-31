@@ -1,6 +1,5 @@
 package we.LiteBoard.global.auth.OAuth2;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,27 +46,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ResponseCookie cookie = ResponseCookie.from("Refresh-Token", refreshToken)
                 .maxAge(60 * 60 * 60)
-                .domain("localhost")
+                .domain(".liteboard.site")
                 .path("/")
                 .httpOnly(true)
-                .secure(false) // TODO 삭제
+                .secure(true)
                 .sameSite("None")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         response.sendRedirect("http://localhost:3000/auth/callback/google");
     }
-
-//    private Cookie createCookie(String key, String value) {
-//
-//        Cookie cookie = new Cookie(key, value);
-//        cookie.setMaxAge(60*60*60);
-//        //cookie.setSecure(true);
-//        cookie.setSecure(false);
-//        cookie.setDomain("localhost");
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true);
-//
-//        return cookie;
-//    }
 }
