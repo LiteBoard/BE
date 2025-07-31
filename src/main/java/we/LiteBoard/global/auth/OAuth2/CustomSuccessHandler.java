@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -28,10 +30,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
-        log.info(">>> OAuth Success: {}", authentication.getPrincipal());
-        log.info(">>> Authorities: {}", authentication.getAuthorities());
-        log.info(">>> OAuth Details: {}", authentication.getDetails());
-
         //OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
@@ -47,19 +45,29 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         tokenCache.save("auth:refresh:" + email, refreshToken, Duration.ofDays(3));
 
-        response.addCookie(createCookie("Refresh-Token", refreshToken));
+        ResponseCookie cookie = ResponseCookie.from("Refresh-Token", refreshToken)
+                .maxAge(60 * 60 * 60)
+                .domain("localhost")
+                .path("/")
+                .httpOnly(true)
+                .secure(false) // TODO 삭제
+                .sameSite("None")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
         response.sendRedirect("http://localhost:3000/auth/callback/google");
     }
 
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60*60*60);
-        //cookie.setSecure(true);
-        cookie.setSecure(false); // TODO 삭제
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
+//    private Cookie createCookie(String key, String value) {
+//
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(60*60*60);
+//        //cookie.setSecure(true);
+//        cookie.setSecure(false);
+//        cookie.setDomain("localhost");
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+//
+//        return cookie;
+//    }
 }
