@@ -3,6 +3,7 @@ package we.LiteBoard.domain.member.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Email;
+import we.LiteBoard.domain.memberProject.enumerate.ProjectRole;
 
 @Schema(description = "회원 관련 요청 DTO")
 public class MemberRequestDTO {
@@ -15,7 +16,8 @@ public class MemberRequestDTO {
 
     @Schema(description = "회원 초대 요청 DTO")
     public record Invite(
-            @Schema(description = "초대 이메일") @Email String email,
-            @Schema(description = "초대할 프로젝트 ID") Long projectId
+            @Schema(description = "초대 이메일", example = "test@naver.com") @Email String email,
+            @Schema(description = "초대할 프로젝트 ID", example = "1") Long projectId,
+            @Schema(description = "권한", example = "ADMIN") ProjectRole role
     ) {}
 }

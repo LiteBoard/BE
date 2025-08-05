@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.filter.CorsFilter;
 import we.LiteBoard.global.auth.OAuth2.CustomSuccessHandler;
 import we.LiteBoard.global.auth.OAuth2.service.CustomOAuth2UserService;
 import we.LiteBoard.global.auth.jwt.filter.JWTFilter;
@@ -31,6 +30,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/health",
             "/auth/**",
+            "/api/v1/accept-invite",
             "/api/v1/**" // 임시 허용
     };
 

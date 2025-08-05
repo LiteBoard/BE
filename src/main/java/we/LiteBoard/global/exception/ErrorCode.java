@@ -37,6 +37,9 @@ public enum ErrorCode {
     PARAMETER_GRAMMAR_ERROR("COMMON422", "파라미터 문법 에러입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     AUTH_PARAMETER_VALIDATION_ERROR("COMMON422", "권한 검사를 하려 했지만 projectId가 파라미터에 없습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
 
+    // Invitation
+    INVITE_EMAIL_MISMATCH("INVITE403", "초대 이메일과 로그인 이메일이 일치하지 않습니다.", HttpStatus.FORBIDDEN),
+
     // Token
     TOKEN_INVALID("TOKEN401", "유효하지 않은 Token 입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_INVALID_ROLE("TOKEN401", "JWT 토큰에 Role 정보가 없습니다.", HttpStatus.UNAUTHORIZED),

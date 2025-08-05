@@ -53,7 +53,7 @@ public class MemberController {
             @RequestBody @Valid MemberRequestDTO.Invite request,
             @CurrentMember Member inviter
     ) {
-        inviteService.invite(request.email(), request.projectId(), inviter);
+        inviteService.invite(request.email(), request.projectId(), request.role(), inviter);
         return SuccessResponse.ok("초대 메일 전송에 성공했습니다.");
     }
 }
