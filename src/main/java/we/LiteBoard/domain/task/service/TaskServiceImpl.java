@@ -9,6 +9,8 @@ import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.member.repository.MemberRepository;
 import we.LiteBoard.domain.notification.service.NotificationService;
+import we.LiteBoard.domain.project.entity.Project;
+import we.LiteBoard.domain.project.repository.ProjectRepository;
 import we.LiteBoard.domain.task.dto.TaskRequestDTO;
 import we.LiteBoard.domain.task.dto.TaskResponseDTO;
 import we.LiteBoard.domain.task.entity.Task;
@@ -36,6 +38,7 @@ public class TaskServiceImpl implements TaskService {
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
     private final TaskMemberRepository taskMemberRepository;
+    private final ProjectRepository projectRepository;
 
     /**
      * 업무 생성
@@ -197,9 +200,10 @@ public class TaskServiceImpl implements TaskService {
      * @return 진행 중인 내 업무 정보 반환
      */
     @Override
-    public TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member member) {
+    public TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member member, Long projectId) {
         List<Status> targetStatuses = List.of(Status.IN_PROGRESS, Status.DELAYED);
-        List<Task> tasks = taskRepository.findByMemberAndStatuses(member, targetStatuses);
+        List<Task> tasks = taskRepository.findByMemberAndStatusesAndProjectId(member, targetStatuses, projectId);
+        Project project = projectRepository.getById(projectId);
 
         List<TaskResponseDTO.MyTask> myTasks = tasks.stream()
                 .map(TaskResponseDTO.MyTask::from)
@@ -212,6 +216,7 @@ public class TaskServiceImpl implements TaskService {
 
         return new TaskResponseDTO.MyTasksResponse(
                 myInfo,
+                project.getTitle(),
                 total,
                 completed,
                 total - completed,

@@ -87,12 +87,13 @@ public class TaskController {
         return SuccessResponse.ok("업무 삭제에 성공했습니다.");
     }
 
-    @GetMapping("/tasks")
+    @GetMapping("/projects/{projectId}/tasks")
     @Operation(summary = "내 업무 조회", description = "내가 담당하고 있는 진행 중인 업무와 Todo 현황을 조회합니다.")
     public SuccessResponse<TaskResponseDTO.MyTasksResponse> getMyTasks(
-            @CurrentMember Member currentMember
+            @CurrentMember Member currentMember,
+            @PathVariable Long projectId
     ) {
-        return SuccessResponse.ok(taskService.getMyInProgressTasks(currentMember));
+        return SuccessResponse.ok(taskService.getMyInProgressTasks(currentMember, projectId));
     }
 
 }
