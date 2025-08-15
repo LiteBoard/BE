@@ -11,6 +11,8 @@ import we.LiteBoard.domain.project.dto.ProjectResponseDTO;
 import we.LiteBoard.domain.project.entity.Project;
 import we.LiteBoard.domain.project.repository.ProjectRepository;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -51,6 +53,19 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectResponseDTO.Detail getById(Long projectId) {
         Project project = projectRepository.getById(projectId);
         return ProjectResponseDTO.Detail.from(project);
+    }
+
+    /**
+     * 현재 로그인 중인 유저의 프로젝트 리스트 조회
+     * @param currentMember 현재 로그인 중인 유저
+     * @return 프로젝트 리스트
+     */
+    @Override
+    public List<ProjectResponseDTO.Summary> getAllByMember(Member currentMember) {
+        return projectRepository.findAllByMemberId(currentMember.getId())
+                .stream()
+                .map(ProjectResponseDTO.Summary::from)
+                .toList();
     }
 
     /**

@@ -40,6 +40,19 @@ public class ProjectResponseDTO {
         }
     }
 
+    @Schema(description = "프로젝트 조회 요약 응답 DTO")
+    public record Summary(
+            @Schema(description = "프로젝트 ID") Long id,
+            @Schema(description = "프로젝트명") String title
+    ) {
+        public static Summary from(Project project) {
+            return new Summary(
+                    project.getId(),
+                    project.getTitle()
+            );
+        }
+    }
+
     @Schema(description = "프로젝트 멤버 요약 DTO")
     public record MemberSummary(
             @Schema(description = "멤버 ID") Long id,

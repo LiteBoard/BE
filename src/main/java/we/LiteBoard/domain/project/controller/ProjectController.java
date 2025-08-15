@@ -14,6 +14,8 @@ import we.LiteBoard.global.common.annotation.CurrentMember;
 import we.LiteBoard.global.common.annotation.ProjectRoleRequired;
 import we.LiteBoard.global.response.SuccessResponse;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "프로젝트")
@@ -36,6 +38,13 @@ public class ProjectController {
     @Operation(summary = "프로젝트 단건 조회 API", description = "프로젝트 ID로 단건 조회합니다.")
     public SuccessResponse<ProjectResponseDTO.Detail> getById(@PathVariable Long projectId) {
         ProjectResponseDTO.Detail result = projectService.getById(projectId);
+        return SuccessResponse.ok(result);
+    }
+
+    @GetMapping
+    @Operation(summary = "프로젝트 조회 API", description = "현재 로그인 중인 유저의 프로젝트 리스트를 조회합니다.")
+    public SuccessResponse<List<ProjectResponseDTO.Summary>> getAllById(@CurrentMember Member currentMember) {
+        List<ProjectResponseDTO.Summary> result = projectService.getAllByMember(currentMember);
         return SuccessResponse.ok(result);
     }
 
