@@ -41,7 +41,8 @@ public class JWTUtil {
     }
 
     public String createAccessToken(Long id, String email, String role) {
-        long accessTokenExpireMs = 1000L * 60 * 1000; // 1000분 //FIXME 임시값
+        // long accessTokenExpireMs = 1000L * 60 * 1000; // 1000분 //FIXME 임시값
+        long accessTokenExpireMs = 1000L * 30; // 30초로 임시 변경
         return createJwt(id, email, role, accessTokenExpireMs);
     }
 
