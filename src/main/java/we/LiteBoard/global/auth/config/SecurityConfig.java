@@ -10,11 +10,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.filter.CorsFilter;
 import we.LiteBoard.global.auth.OAuth2.CustomSuccessHandler;
 import we.LiteBoard.global.auth.OAuth2.service.CustomOAuth2UserService;
 import we.LiteBoard.global.auth.jwt.filter.JWTFilter;
 import we.LiteBoard.global.auth.jwt.util.JWTUtil;
+import we.LiteBoard.global.exception.custom.CustomAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +24,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private final String[] allowedUrls = {
             "/",
@@ -68,6 +69,9 @@ public class SecurityConfig {
         http.sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+        );
         return http.build();
     }
 }
