@@ -10,9 +10,6 @@ import we.LiteBoard.global.auth.jwt.util.JWTUtil;
 import we.LiteBoard.global.auth.service.AuthService;
 import we.LiteBoard.global.util.redis.TokenCache;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -54,17 +51,12 @@ public class AuthController {
 
     @PostMapping("/reissue")
     @Operation(summary = "Access Token 재발급", description = "Refresh Token으로 Access Token을 재발급 합니다.")
-    public ResponseEntity<Map<String, String>> reissue(@RequestBody Map<String, String> body) {
-        String refreshToken = body.get("refreshToken");
-        if (refreshToken == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
+    public ResponseEntity<Void> reissue(
+            @RequestHeader("Refresh-Token") String refreshToken
+    ) {
         String newAccessToken = authService.reissueAccessToken(refreshToken);
-
-        Map<String, String> result = new HashMap<>();
-        result.put("accessToken", newAccessToken);
-
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + newAccessToken)
+                .build();
     }
 }
