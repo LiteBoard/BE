@@ -25,10 +25,10 @@ public class MemberInviteController {
         ResponseCookie cookie = ResponseCookie.from("inviteToken", token)
                 .path("/")
                 .httpOnly(true)
+                .secure(true)
                 .maxAge(Duration.ofMinutes(10))
                 .build();
         response.addHeader("Set-Cookie", cookie.toString());
-
         response.sendRedirect("/oauth2/authorization/google");
     }
 }
