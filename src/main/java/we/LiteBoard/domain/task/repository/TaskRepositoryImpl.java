@@ -47,14 +47,15 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public List<Task> findByMemberAndStatuses(Member member, List<Status> statuses) {
+    public List<Task> findByMemberAndStatusesAndProjectId(Member member, List<Status> statuses, Long projectId) {
         return queryFactory
                 .select(task)
                 .from(taskMember)
                 .join(taskMember.task, task)
                 .where(
                         taskMember.member.eq(member),
-                        task.status.in(statuses)
+                        task.status.in(statuses),
+                        task.category.project.id.eq(projectId)
                 )
                 .orderBy(task.endDate.asc().nullsLast())
                 .fetch();

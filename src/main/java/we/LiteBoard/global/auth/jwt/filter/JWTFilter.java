@@ -13,6 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import we.LiteBoard.global.auth.OAuth2.CustomOAuth2User;
 import we.LiteBoard.global.auth.OAuth2.dto.UserDTO;
 import we.LiteBoard.global.auth.jwt.util.JWTUtil;
+import we.LiteBoard.global.exception.CustomException;
 
 import java.io.IOException;
 
@@ -54,13 +55,11 @@ public class JWTFilter extends OncePerRequestFilter {
         String token = authorization.split(" ")[1];
 
         // 토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료
-            return;
+        try {
+            jwtUtil.isExpired(token);
+        } catch (CustomException e) {
+            request.setAttribute("errorCode", e.getErrorCode());
+            throw e;
         }
 
         // 토큰에서 id, username과 role 획득

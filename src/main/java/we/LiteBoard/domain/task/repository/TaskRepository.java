@@ -11,6 +11,6 @@ public interface TaskRepository {
     List<Task> findAllByCategoryId(Long categoryId);
     Task getById(Long taskId);
     void deleteById(Long taskId);
-    List<Task> findByMemberAndStatuses(Member member, List<Status> statuses);
+    List<Task> findByMemberAndStatusesAndProjectId(Member member, List<Status> statuses, Long projectId);
     List<Task> findTasksToCheckDelay();
 }

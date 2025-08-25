@@ -17,10 +17,22 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        ErrorResponse<Object> errorResponse = ErrorResponse.of(ErrorCode.FORBIDDEN.getErrorCode(), ErrorCode.FORBIDDEN.getMessage());
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException authException) throws IOException {
+
+        ErrorCode errorCode = (ErrorCode) request.getAttribute("errorCode");
+        if (errorCode == null) {
+            errorCode = ErrorCode.UNAUTHORIZED;
+        }
+
+        ErrorResponse<Object> errorResponse = ErrorResponse.of(
+                errorCode.getErrorCode(),
+                errorCode.getMessage()
+        );
+
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(errorCode.getStatus().value());
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }

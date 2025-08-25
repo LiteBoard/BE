@@ -4,6 +4,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -14,6 +17,7 @@ import we.LiteBoard.global.util.redis.TokenCache;
 import java.io.IOException;
 import java.time.Duration;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -36,9 +40,17 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String refreshToken = jwtUtil.createRefreshToken(userId, email, role);
         tokenCache.save("auth:refresh:" + email, refreshToken, Duration.ofDays(3));
+
+        ResponseCookie cookie = ResponseCookie.from("Refresh-Token", refreshToken)
+                .maxAge(60 * 60 * 60)
+                .domain(".liteboard.site")
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         response.addCookie(createCookie("Refresh-Token", refreshToken));
-
-
 
 
         String inviteToken = null;

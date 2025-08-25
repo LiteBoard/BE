@@ -14,5 +14,5 @@ public interface TaskService {
     TaskResponseDTO.Detail getById(Long taskId);
     TaskResponseDTO.Upsert update(Long taskId, TaskRequestDTO.Update request);
     void deleteById(Long taskId);
-    TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member currentMember);
+    TaskResponseDTO.MyTasksResponse getMyInProgressTasks(Member member, Long projectId);
 }
