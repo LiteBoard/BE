@@ -5,11 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.memberProject.dto.MemberProjectRequestDTO;
 import we.LiteBoard.domain.memberProject.enumerate.ProjectRole;
 import we.LiteBoard.domain.memberProject.service.MemberProjectService;
 import we.LiteBoard.global.common.annotation.ProjectRoleRequired;
 import we.LiteBoard.global.response.SuccessResponse;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +21,15 @@ import we.LiteBoard.global.response.SuccessResponse;
 public class MemberProjectController {
 
     private final MemberProjectService memberProjectService;
+
+    @GetMapping("/{projectId}/members")
+    @Operation(summary = "프로젝트 멤버 조회", description = "해당 프로젝트에 속한 멤버 리스트를 권한순으로 조회합니다.")
+    public SuccessResponse<List<MemberResponseDTO.ProjectMemberResponse>> getProjectMembers(
+            @PathVariable Long projectId
+    ) {
+        List<MemberResponseDTO.ProjectMemberResponse> members = memberProjectService.getProjectMembers(projectId);
+        return SuccessResponse.ok(members);
+    }
 
     @PostMapping("/{projectId}/members")
     @ProjectRoleRequired(ProjectRole.ADMIN)
