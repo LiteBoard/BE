@@ -3,6 +3,7 @@ package we.LiteBoard.domain.memberProject.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.member.entity.Member;
 import we.LiteBoard.domain.member.repository.MemberRepository;
 import we.LiteBoard.domain.memberProject.dto.MemberProjectRequestDTO;
@@ -13,6 +14,8 @@ import we.LiteBoard.domain.project.repository.ProjectRepository;
 import we.LiteBoard.global.exception.CustomException;
 import we.LiteBoard.global.exception.ErrorCode;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -21,6 +24,15 @@ public class MemberProjectServiceImpl implements MemberProjectService {
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
     private final MemberProjectRepository memberProjectRepository;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MemberResponseDTO.ProjectMemberResponse> getProjectMembers(Long projectId) {
+        List<MemberProject> memberProjects = memberProjectRepository.findAllByProjectId(projectId);
+        return memberProjects.stream()
+                .map(MemberResponseDTO.ProjectMemberResponse::from)
+                .toList();
+    }
 
     @Override
     @Transactional

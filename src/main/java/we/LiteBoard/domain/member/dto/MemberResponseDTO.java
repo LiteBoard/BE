@@ -2,6 +2,8 @@ package we.LiteBoard.domain.member.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.memberProject.entity.MemberProject;
+import we.LiteBoard.domain.memberProject.enumerate.ProjectRole;
 
 @Schema(description = "멤버 관련 응답 DTO")
 public class MemberResponseDTO {
@@ -50,4 +52,25 @@ public class MemberResponseDTO {
             );
         }
     }
+
+    @Schema(description = "프로젝트 멤버 리스트 응답 DTO")
+    public record ProjectMemberResponse(
+            @Schema(description = "멤버 ID") Long id,
+            @Schema(description = "이름") String nickname,
+            @Schema(description = "프로필 사진 주소") String profileUrl,
+            @Schema(description = "이메일") String email,
+            @Schema(description = "프로젝트 내 역할") ProjectRole role
+    ) {
+        public static ProjectMemberResponse from(MemberProject memberProject) {
+            Member member = memberProject.getMember();
+            return new ProjectMemberResponse(
+                    member.getId(),
+                    member.getNickname(),
+                    member.getPicture(),
+                    member.getEmail(),
+                    memberProject.getProjectRole()
+            );
+        }
+    }
+
 }
