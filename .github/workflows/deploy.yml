@@ -81,5 +81,8 @@ jobs:
               "${{ secrets.JWT_SECRET }}" \
               "${{ secrets.GOOGLE_CLIENT_ID }}" \
               "${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+              "${{ secrets.MAIL_USERNAME }}" \
+              "${{ secrets.MAIL_PASSWORD }}" \
+              "${{ secrets.INVITE_JWT_SECRET }}" \
               "${{ secrets.DOCKERHUB_USERNAME }}" \
               "${{ secrets.DOCKERHUB_USERNAME }}/lite-board:latest"
