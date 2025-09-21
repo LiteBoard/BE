@@ -74,7 +74,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             inviteService.acceptInvite(inviteToken, memberId);
             getRedirectStrategy().sendRedirect(
                     request, response,
-                    "http://localhost:3000/invite/success"
+                    "http://localhost:3000/team"
             );
         } else {
             getRedirectStrategy().sendRedirect(
