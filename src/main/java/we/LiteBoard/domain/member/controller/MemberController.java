@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import we.LiteBoard.domain.member.dto.MemberRequestDTO;
 import we.LiteBoard.domain.member.dto.MemberResponseDTO;
 import we.LiteBoard.domain.member.entity.Member;
+import we.LiteBoard.domain.member.service.MemberInviteService;
 import we.LiteBoard.domain.member.service.MemberService;
 import we.LiteBoard.global.common.annotation.CurrentMember;
 import we.LiteBoard.global.response.SuccessResponse;
@@ -19,6 +20,7 @@ import we.LiteBoard.global.response.SuccessResponse;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberInviteService inviteService;
 
     @GetMapping("/my")
     @Operation(summary = "내 정보 조회", description = "현재 사용자의 성명, 이메일, 알림 수신 여부를 조회합니다.")
@@ -43,5 +45,15 @@ public class MemberController {
             @CurrentMember Member member
     ){
         return SuccessResponse.ok(memberService.changeNickName(request, member));
+    }
+
+    @PostMapping("/members/invite")
+    @Operation(summary = "회원 초대", description = "해당 이메일로 초대 메일을 전송합니다.")
+    public SuccessResponse<String> inviteMember(
+            @RequestBody @Valid MemberRequestDTO.Invite request,
+            @CurrentMember Member inviter
+    ) {
+        inviteService.invite(request.email(), request.projectId(), request.role(), inviter);
+        return SuccessResponse.ok("초대 메일 전송에 성공했습니다.");
     }
 }
