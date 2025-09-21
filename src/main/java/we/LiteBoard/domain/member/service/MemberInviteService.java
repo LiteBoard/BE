@@ -36,7 +36,7 @@ public class MemberInviteService {
         Project project = projectRepository.getById(projectId);
 
         String token = inviteJwtProvider.createInviteToken(toEmail, projectId, role);
-        String inviteLink = "http://localhost:8080/api/v1/accept-invite?token=" + token; //TODO - 도메인 수정
+        String inviteLink = "https://liteboard.site/api/v1/accept-invite?token=" + token;
 
         Context context = new Context();
         context.setVariable("inviterName", inviter.getName());
