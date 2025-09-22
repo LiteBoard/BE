@@ -19,6 +19,11 @@ import we.LiteBoard.global.exception.CustomException;
 import we.LiteBoard.global.exception.ErrorCode;
 import we.LiteBoard.global.infra.email.MailSender;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 @Slf4j
 @Service
 @Transactional
@@ -32,19 +37,31 @@ public class MemberInviteService {
     private final MemberProjectRepository memberProjectRepository;
     private final MemberRepository memberRepository;
 
-    public void invite(String toEmail, Long projectId, ProjectRole role, Member inviter) {
+    public void inviteBulk(List<String> emails, Long projectId, ProjectRole role, Member inviter) {
         Project project = projectRepository.getById(projectId);
 
-        String token = inviteJwtProvider.createInviteToken(toEmail, projectId, role);
-        String inviteLink = "https://liteboard.site/api/v1/accept-invite?token=" + token;
+        final String inviterName = inviter.getName();
+        final String projectTitle = project.getTitle();
 
-        Context context = new Context();
-        context.setVariable("inviterName", inviter.getName());
-        context.setVariable("projectTitle", project.getTitle());
-        context.setVariable("inviteLink", inviteLink);
+        // 공백/대소문자 정리 + 중복 제거
+        Set<String> normalized = new LinkedHashSet<>();
+        for (String raw : emails) {
+            String e = Optional.ofNullable(raw).map(String::trim).orElse("");
+            if (!e.isEmpty()) normalized.add(e.toLowerCase());
+        }
 
-        String html = templateEngine.process("invite", context);
-        mailSender.send(toEmail, "[LiteBoard] 프로젝트 초대 메일", html);
+        for (String email : normalized) {
+            String token = inviteJwtProvider.createInviteToken(email, projectId, role);
+            String inviteLink = "https://liteboard.site/api/v1/accept-invite?token=" + token;
+
+            Context context = new Context();
+            context.setVariable("inviterName", inviterName);
+            context.setVariable("projectTitle", projectTitle);
+            context.setVariable("inviteLink", inviteLink);
+
+            String html = templateEngine.process("invite", context);
+            mailSender.send(email, "[LiteBoard] 프로젝트 초대 메일", html);
+        }
     }
 
     public void acceptInvite(String token, Long memberId) {

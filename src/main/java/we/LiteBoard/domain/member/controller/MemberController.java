@@ -49,11 +49,13 @@ public class MemberController {
 
     @PostMapping("/members/invite")
     @Operation(summary = "회원 초대", description = "해당 이메일로 초대 메일을 전송합니다.")
-    public SuccessResponse<String> inviteMember(
-            @RequestBody @Valid MemberRequestDTO.Invite request,
+    public SuccessResponse<String> inviteMembers(
+            @RequestBody @Valid MemberRequestDTO.InviteBulk request,
             @CurrentMember Member inviter
     ) {
-        inviteService.invite(request.email(), request.projectId(), request.role(), inviter);
+        inviteService.inviteBulk(
+                request.emails(), request.projectId(), request.role(), inviter
+        );
         return SuccessResponse.ok("초대 메일 전송에 성공했습니다.");
     }
 }

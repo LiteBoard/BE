@@ -1,9 +1,10 @@
 package we.LiteBoard.domain.member.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.*;
 import we.LiteBoard.domain.memberProject.enumerate.ProjectRole;
+
+import java.util.List;
 
 @Schema(description = "회원 관련 요청 DTO")
 public class MemberRequestDTO {
@@ -14,10 +15,16 @@ public class MemberRequestDTO {
             @NotBlank String nickName
     ) {}
 
-    @Schema(description = "회원 초대 요청 DTO")
-    public record Invite(
-            @Schema(description = "초대 이메일", example = "test@naver.com") @Email String email,
-            @Schema(description = "초대할 프로젝트 ID", example = "1") Long projectId,
-            @Schema(description = "권한", example = "ADMIN") ProjectRole role
+    @Schema(description = "회원 대량 초대 요청 DTO")
+    public record InviteBulk(
+            @Schema(description = "초대 이메일 목록", example = "[\"a@naver.com\",\"b@gmail.com\"]")
+            @NotEmpty @Size(max = 20)
+            List<@Email String> emails,
+
+            @Schema(description = "초대할 프로젝트 ID", example = "1")
+            @NotNull Long projectId,
+
+            @Schema(description = "권한", example = "VIEWER")
+            @NotNull ProjectRole role
     ) {}
 }
